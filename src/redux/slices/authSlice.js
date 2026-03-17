@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export const loginUser = createAsyncThunk(
     "auth/loginUser",
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await fetch("https://fakestoreapi.com/auth/login", {
+            console.log("api called", userData)
+            const response = await fetch("https://api.escuelajs.co/api/v1/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -14,9 +17,19 @@ export const loginUser = createAsyncThunk(
 
             const data = await response.json();
 
+            console.log("data", data)
+
             if (!response.ok) {
-                return rejectWithValue(data);
+
+                return rejectWithValue(data?.message || "Login failed");
             }
+
+
+            // try {
+            //     await AsyncStorage.setItem("token", data?.access_token);
+            // } catch (storageError) {
+            //     console.warn("Failed to save token in AsyncStorage", storageError);
+            // }
 
             return data;
         } catch (error) {
@@ -25,10 +38,49 @@ export const loginUser = createAsyncThunk(
     }
 );
 
+export const RegisterUser = createAsyncThunk("auth/RegisterUser", async (userData, { rejectWithValue }) => {
+    try {
+        console.log("Api Called For Register User", userData)
+        const response = await fetch("https://api.escuelajs.co/api/v1/users/", { method: 'post', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(userData) })
+
+        const data = await response.json()
+        console.log("REgister USer rES", data)
+
+        if (!response.ok) {
+            return rejectWithValue(data?.message || "Registration failed");
+        }
+    } catch (error) {
+        console.error("Error while Registering User", error)
+        return rejectWithValue(error.message)
+    }
+})
+
+export const getUserProfile = createAsyncThunk("auth/getUserProfile", async (userData, { rejectWithValue, getState }) => {
+    try {
+        console.log("Api Called For Register User", userData)
+
+        const token = getState().auth.token;
+        const response = await fetch("https://api.escuelajs.co/api/v1/auth/profile", { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(userData) })
+
+        const data = await response.json()
+        console.log("get User profile res", data)
+
+        if (!response.ok) {
+            return rejectWithValue(data?.message || "Registration failed");
+        }
+        return data;
+    } catch (error) {
+        console.error("Error while Fetching User Profile", error)
+        return rejectWithValue(error.message)
+    }
+})
+
+
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {
-        user: null,
+        user: {},
         token: null,
         loading: false,
         error: null
@@ -44,17 +96,41 @@ const authSlice = createSlice({
         builder
             .addCase(loginUser.pending, (state) => {
                 state.loading = true;
-            })
-            .addCase(loginUser.fulfilled, (state, action) => {
+                state.error = null;
+
+            }).addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.token = action.payload.token;
-            })
-            .addCase(loginUser.rejected, (state, action) => {
+
+                state.token = action.payload.access_token;
+
+            }).addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+
+            }).addCase(RegisterUser.pending, (state) => {
+                state.loading = true;
+
+            }).addCase(RegisterUser.fulfilled, (state) => {
+                state.loading = false
+
+            }).addCase(RegisterUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload;
+
+            }).addCase(getUserProfile.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+
+            }).addCase(getUserProfile.fulfilled, (state, action) => {
+                state.loading = false
+                state.user = action.payload
+
+            }).addCase(getUserProfile.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload;
+            })
     }
-});
+})
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

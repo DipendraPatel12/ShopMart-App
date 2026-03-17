@@ -8,21 +8,31 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useSelector } from 'react-redux';
 const Signup = ({ navigation }) => {
   const [userData, setUserData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: 'Nicolas',
+    email: 'nico@gmail.com',
+    password: '1234',
+    avatar: 'https://picsum.photos/800',
   });
 
   useEffect(() => {
     console.warn(userData);
   }, [userData]);
 
+  const { token } = useSelector(state => state.auth);
+  useEffect(() => {
+    if (token) {
+      navigation.navigate('MainTabs', {
+        screen: 'Home',
+      });
+    }
+  }, [token]);
+
   const signup = async () => {
     if (
-      !userData.username ||
+      !userData.name ||
       !userData.email ||
       !userData.password ||
       !userData.confirmPassword
@@ -68,7 +78,7 @@ const Signup = ({ navigation }) => {
           <TextInput
             placeholder="Enter Name"
             placeholderTextColor="#B0BEC5"
-            value={userData?.username}
+            value={userData?.name}
             style={{
               borderWidth: 1,
               borderRadius: 20,
@@ -77,7 +87,7 @@ const Signup = ({ navigation }) => {
               borderColor: '#B0BEC5',
               color: 'black',
             }}
-            onChangeText={text => setUserData({ ...userData, username: text })}
+            onChangeText={text => setUserData({ ...userData, name: text })}
           ></TextInput>
         </View>
 
@@ -163,7 +173,7 @@ const Signup = ({ navigation }) => {
           justifyContent: 'center',
           alignItems: 'center',
           gap: 20,
-          marginBottom: 10,
+          marginBottom: 40,
         }}
       >
         <Text>Or Login With</Text>

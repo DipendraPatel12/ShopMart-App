@@ -9,19 +9,32 @@ import {
 } from 'react-native';
 import React from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  decreaseQuantity,
+  increaseQuantity,
+} from '../../redux/slices/cartSlice';
 
 const Cart = () => {
-  const productsArray = [
-    { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-    { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-    { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-    { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-    { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-    { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-    { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  ];
+  const { cart } = useSelector(state => state.cart);
+  console.warn('CART DATA', cart);
+  const dispatch = useDispatch();
 
   const { width } = Dimensions.get('window');
+
+  if (cart.length === 0)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          justifyContent: 'center',
+          alignContent: 'center',
+        }}
+      >
+        <Text style={{ alignSelf: 'center' }}> Cart Empty !</Text>
+      </View>
+    );
 
   return (
     <View
@@ -35,7 +48,7 @@ const Cart = () => {
     >
       <View style={{ height: 350 }}>
         <FlatList
-          data={productsArray}
+          data={cart}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View style={{ marginBottom: 20, marginLeft: 2 }}>
@@ -63,8 +76,9 @@ const Cart = () => {
                   }}
                 >
                   <Image
-                    source={require('../../assets/images/splash1.png')}
-                    style={{ width: 90, height: 90 }}
+                    source={{ uri: item?.image }}
+                    style={{ width: 70, height: 70, borderRadius: 10 }}
+                    resizeMode="contain"
                   ></Image>
                 </View>
 
@@ -76,11 +90,13 @@ const Cart = () => {
                   }}
                 >
                   <View style={{ justifyContent: 'center', gap: 5 }}>
-                    <Text style={{ fontWeight: 2000 }}>{item.title}</Text>
-                    <Text style={{ color: 'grey', fontWeight: 500 }}>
-                      Quantity: 2
+                    <Text style={{ fontWeight: 2000 }}>
+                      {item?.title.slice(0, 20)}
                     </Text>
-                    <Text style={{ fontWeight: 800 }}>$ {item.price}</Text>
+                    <Text style={{ color: 'grey', fontWeight: 500 }}>
+                      Quantity: {item?.quantity}
+                    </Text>
+                    <Text style={{ fontWeight: 800 }}>$ {item?.price}</Text>
                   </View>
 
                   <View style={{ justifyContent: 'space-between' }}>
@@ -93,6 +109,7 @@ const Cart = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
+                      onPress={() => dispatch(increaseQuantity(item?.id))}
                     >
                       <FontAwesome5 name="plus" size={17} color="white" />
                     </TouchableOpacity>
@@ -105,6 +122,7 @@ const Cart = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
+                      onPress={() => dispatch(decreaseQuantity(item?.id))}
                     >
                       <FontAwesome5 name="minus" size={17} color="white" />
                     </TouchableOpacity>
@@ -147,11 +165,16 @@ const Cart = () => {
             </Text>
           </View>
           <View>
-            <Text style={{ color: '#90A4AE', fontWeight: 800 }}>3</Text>
+            <Text style={{ color: '#90A4AE', fontWeight: 800 }}>
+              {cart?.length || 0}
+            </Text>
             <Text style={{ color: '#90A4AE', fontWeight: 800 }}>10</Text>
             <Text style={{ color: '#90A4AE', fontWeight: 800 }}>45</Text>
             <Text style={{ color: '#64B5F6', fontWeight: 800, fontSize: 20 }}>
-              $ 452
+              ${' '}
+              {cart.reduce((prev, pro) => {
+                return prev + pro.price;
+              }, 0) + 55}
             </Text>
           </View>
         </View>

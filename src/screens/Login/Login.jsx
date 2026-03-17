@@ -13,24 +13,38 @@ import { loginUser } from '../../redux/slices/authSlice';
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('dipendra@gmail.com');
+  const [password, setPassword] = useState('1234');
 
   const { loading, error, token } = useSelector(state => state.auth);
 
   useEffect(() => {
-    console.warn(username, password);
-  }, [username, password]);
+    if (token) {
+      navigation.navigate('MainTabs', {
+        screen: 'Home',
+      });
+    }
+  }, [token]);
+
+  // useEffect(() => {
+  //   if (error) {
+  //     Alert.alert('Login Failed', error);
+  //   }
+  // }, [error]);
+
+  useEffect(() => {
+    console.warn(email, password);
+  }, [email, password]);
 
   const login = async () => {
-    if (!username || !password) {
+    if (!email || !password) {
       Alert.alert('Please Fill All the Fields');
       return;
     }
     dispatch(
       loginUser({
-        username,
-        password,
+        email: email.trim(),
+        password: password.trim(),
       }),
     );
   };
@@ -51,7 +65,7 @@ const Login = ({ navigation }) => {
           <TextInput
             placeholder="Enter Name"
             placeholderTextColor="grey"
-            value={username}
+            value={email}
             style={{
               borderWidth: 1,
               borderRadius: 20,
@@ -60,7 +74,7 @@ const Login = ({ navigation }) => {
               borderColor: '#B0BEC5',
               color: 'black',
             }}
-            onChangeText={text => setUserName(text)}
+            onChangeText={text => setEmail(text)}
           ></TextInput>
         </View>
 
@@ -97,9 +111,22 @@ const Login = ({ navigation }) => {
           style={{ width: 330, backgroundColor: '#42A5F5', borderRadius: 20 }}
           onPress={() => login()}
         >
-          <Text style={{ textAlign: 'center', padding: 16, color: 'white' }}>
-            Log in
-          </Text>
+          {loading ? (
+            <Text
+              style={{
+                textAlign: 'center',
+                padding: 16,
+                color: 'white',
+                fontWeight: 500,
+              }}
+            >
+              Logging in...
+            </Text>
+          ) : (
+            <Text style={{ textAlign: 'center', padding: 16, color: 'white' }}>
+              Login
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -108,7 +135,7 @@ const Login = ({ navigation }) => {
           justifyContent: 'center',
           alignItems: 'center',
           gap: 20,
-          marginBottom: 10,
+          marginBottom: 40,
         }}
       >
         <Text>Or Login With</Text>

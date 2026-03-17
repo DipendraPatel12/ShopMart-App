@@ -139,7 +139,7 @@ const StackNavigator = () => {
                   color: 'grey',
                 }}
               >
-                {'<'}
+                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
               </Text>
             </TouchableOpacity>
           ),
@@ -174,7 +174,7 @@ const StackNavigator = () => {
                   color: 'grey',
                 }}
               >
-                {'<'}
+                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
               </Text>
             </TouchableOpacity>
           ),
@@ -209,7 +209,7 @@ const StackNavigator = () => {
                   color: 'grey',
                 }}
               >
-                {'<'}
+                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
               </Text>
             </TouchableOpacity>
           ),

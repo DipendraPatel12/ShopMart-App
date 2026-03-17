@@ -1,26 +1,42 @@
 import {
-  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
   Text,
-  Touchable,
   TouchableOpacity,
   View,
+  Dimensions,
+  FlatList,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useDispatch, useSelector } from 'react-redux';
+import { singleProduct } from '../../redux/slices/productSlice';
+import Loading from '../../components/Loading';
 
 const ProductDetail = ({ navigation, route }) => {
   const [showMore, setShowMore] = useState(false);
-  const { product } = route.params;
+
+  const dispatch = useDispatch();
 
   const { width } = Dimensions.get('window');
 
   // console.warn('product', route.params);
   // console.warn('w', width);
-  
+  const { product, loading } = useSelector(state => state.product);
+  console.warn(route?.params?.product?.id);
+
+  useEffect(() => {
+    const id = route?.params?.product?.id;
+
+    if (id) {
+      dispatch(singleProduct(id));
+    }
+  }, [route?.params]);
+
+  if (loading) return <Loading></Loading>;
+
   return (
     <ScrollView style={{ flex: 1 }}>
       <View
@@ -34,7 +50,7 @@ const ProductDetail = ({ navigation, route }) => {
         }}
       >
         <Image
-          source={{ uri: `${product.image}` }}
+          source={{ uri: `${product?.images?.[0]}` }}
           style={{ width: width - 10, height: 200 }}
           resizeMode="contain"
         ></Image>
@@ -59,16 +75,14 @@ const ProductDetail = ({ navigation, route }) => {
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
             <Text style={{ color: 'grey', fontWeight: 500 }}>
-              {product.title.slice(0, 30)}..
+              {product?.title?.slice(0, 30)}..
             </Text>
             <Text style={{ color: 'grey', fontWeight: 500 }}>Price</Text>
           </View>
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
-            <Text style={{ color: 'grey', fontWeight: 500 }}>
-              ⭐{product.rating.rate}
-            </Text>
+            <Text style={{ color: 'grey', fontWeight: 500 }}>⭐3.5</Text>
             <Text style={{ color: '#42A5F5', fontWeight: 900, fontSize: 18 }}>
               ${product.price}
             </Text>
@@ -77,99 +91,32 @@ const ProductDetail = ({ navigation, route }) => {
 
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
           <Text style={{ fontWeight: 500 }}>Select Color</Text>
-          <View style={{ flexDirection: 'row', gap: 20 }}>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Image
-                source={{ uri: `${product.image}` }}
-                style={{ width: 30, height: 30 }}
-              ></Image>
-            </View>
 
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Image
-                source={{ uri: `${product.image}` }}
-                style={{ width: 30, height: 30 }}
-              ></Image>
-            </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Image
-                source={{ uri: `${product.image}` }}
-                style={{ width: 30, height: 30 }}
-              ></Image>
-            </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Image
-                source={{ uri: `${product.image}` }}
-                style={{ width: 30, height: 30 }}
-              ></Image>
-            </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Image
-                source={{ uri: `${product.image}` }}
-                style={{ width: 30, height: 30 }}
-              ></Image>
-            </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Image
-                source={{ uri: `${product.image}` }}
-                style={{ width: 30, height: 30 }}
-              ></Image>
-            </View>
-          </View>
+          <FlatList
+            data={product.images}
+            horizontal
+            keyExtractor={index => index.toString()}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <View style={{ flexDirection: 'row', marginRight: 10 }}>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: '#CFD8DC',
+                    borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Image
+                    source={{ uri: `${item}` }}
+                    style={{ width: 30, height: 30 }}
+                  ></Image>
+                </View>
+              </View>
+            )}
+          ></FlatList>
         </View>
 
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
@@ -293,8 +240,8 @@ const ProductDetail = ({ navigation, route }) => {
             }}
           >
             {showMore
-              ? `${product.description} `
-              : `${product.description.slice(0, 90)}....   `}
+              ? `${product?.description} `
+              : `${product?.description?.slice(0, 90)}....   `}
 
             {showMore === false ? (
               <TouchableOpacity

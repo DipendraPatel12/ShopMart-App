@@ -1,12 +1,17 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Slider from '../../components/Slider';
 import Category from '../../components/Category';
 import ProductRender from '../../components/ProductRender';
+import Loading from '../../components/Loading';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCategories, getProducts } from '../../redux/slices/productSlice';
+import { getUserProfile } from '../../redux/slices/authSlice';
 
 const Home = ({ navigation }) => {
-  const [products, setProduct] = useState([]);
+  const dispatch = useDispatch();
 
+  const { loading, error, products } = useSelector(state => state.product);
   // const productsArray = [
   //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
   //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
@@ -18,19 +23,12 @@ const Home = ({ navigation }) => {
   // ];
 
   useEffect(() => {
-    const getAllProducts = async () => {
-      try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        const data = await response.json();
-        console.warn('data', data);
-        setProduct(data);
-      } catch (error) {
-        console.warn(error);
-      }
-    };
-
-    getAllProducts();
+    dispatch(getUserProfile());
+    dispatch(getProducts());
+    dispatch(getCategories());
   }, []);
+
+  if (loading) return <Loading></Loading>;
 
   return (
     <View style={styles.container}>
@@ -45,9 +43,7 @@ const Home = ({ navigation }) => {
             <Category />
           </>
         }
-        renderItem={({ item }) => (
-          <ProductRender item={item} navigation={navigation} />
-        )}
+        renderItem={({ item }) => <ProductRender item={item} />}
       />
     </View>
   );

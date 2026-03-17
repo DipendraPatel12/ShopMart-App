@@ -1,7 +1,25 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-const ProductRender = ({ item, navigation }) => {
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct } from '../redux/slices/cartSlice';
+
+const ProductRender = ({ item }) => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const handleAddToCart = item => {
+    const data = {
+      id: item?.id,
+      title: item?.title,
+      image: item?.images?.[0],
+      price: item?.price,
+      quantity: 1,
+    };
+    dispatch(addProduct(data));
+  };
+
   return (
     <View style={styles.productContainer}>
       <TouchableOpacity
@@ -12,21 +30,24 @@ const ProductRender = ({ item, navigation }) => {
       >
         <View style={styles.productInnerCard}>
           <Image
-            source={{ uri: `${item?.image}` }}
+            source={{ uri: `${item?.images?.[0]}` }}
             style={{ width: 120, height: 120 }}
             resizeMode="cover"
           ></Image>
         </View>
         <View style={styles.productTextContainer}>
-          <Text style={styles.productText}>{item.title.slice(0, 10)}</Text>
-          <Text style={{ color: '#78909C', fontWeight: 500 }}>
-            {item.rating.rate}
-          </Text>
+          <Text style={styles.productText}>{item?.title?.slice(0, 10)}</Text>
+          <Text style={{ color: '#78909C', fontWeight: 500 }}>5.2</Text>
         </View>
 
         <View style={styles.productPriceAndAddbtn}>
-          <Text style={{ fontSize: 13, fontWeight: 500 }}>${item.price}</Text>
-          <TouchableOpacity style={styles.addToCartBtn}>
+          <Text style={{ fontSize: 13, fontWeight: 500 }}>${item?.price}</Text>
+          <TouchableOpacity
+            style={styles.addToCartBtn}
+            onPress={() => {
+              handleAddToCart(item);
+            }}
+          >
             <FontAwesome5 name="plus" size={10} color="white" />
           </TouchableOpacity>
         </View>

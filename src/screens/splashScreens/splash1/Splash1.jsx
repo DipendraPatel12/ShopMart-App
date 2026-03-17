@@ -1,7 +1,28 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash1 = ({ navigation }) => {
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        console.warn('token from storage ', token);
+        if (token) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainTabs' }],
+          });
+        }
+        console.warn('sdfs');
+      } catch (e) {
+        console.warn('Error reading token', e);
+      }
+    };
+
+    checkToken();
+  }, []);
   return (
     <View
       style={{

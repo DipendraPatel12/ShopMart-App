@@ -6,16 +6,21 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 const Category = () => {
-  const categories = [
-    'All',
-    'shoes',
-    'bag',
-    'clothes',
-    'Acessories',
-    'Electoronics',
-  ];
+  const navigation = useNavigation();
+  const { categories } = useSelector(state => state.product);
+
+  // const categories = [
+  //   'All',
+  //   'shoes',
+  //   'bag',
+  //   'clothes',
+  //   'Acessories',
+  //   'Electoronics',
+  // ];
   return (
     <View>
       <Text style={styles.categoryText}>Category</Text>
@@ -31,11 +36,12 @@ const Category = () => {
               style={styles.categoryCard}
               onPress={() => {
                 navigation.navigate('CategoryProduct', {
-                  categoryName: item,
+                  category: item,
+                  categoryName: item?.name,
                 });
               }}
             >
-              <Text style={styles.categoryTextNames}>{item}</Text>
+              <Text style={styles.categoryTextNames}>{item?.name}</Text>
             </TouchableOpacity>
           </View>
         )}
