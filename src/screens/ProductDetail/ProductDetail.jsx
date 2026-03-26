@@ -14,6 +14,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
 import { singleProduct } from '../../redux/slices/productSlice';
 import Loading from '../../components/Loading';
+import { resetSuccess, addFavorite } from '../../redux/slices/favoriteProduct';
+import { addProduct, cartSuccessReset } from '../../redux/slices/cartSlice';
 
 const ProductDetail = ({ navigation, route }) => {
   const [showMore, setShowMore] = useState(false);
@@ -25,6 +27,8 @@ const ProductDetail = ({ navigation, route }) => {
   // console.warn('product', route.params);
   // console.warn('w', width);
   const { product, loading } = useSelector(state => state.product);
+  const { success } = useSelector(state => state.favorite);
+  const { cart_success } = useSelector(state => state.cart);
   console.warn(route?.params?.product?.id);
 
   useEffect(() => {
@@ -35,35 +39,65 @@ const ProductDetail = ({ navigation, route }) => {
     }
   }, [route?.params]);
 
+  const addToFavorite = () => {
+    dispatch(
+      addFavorite({
+        id: product?.id,
+        title: product?.title,
+        images: product?.images,
+        rating: 5.2,
+        price: product?.price,
+      }),
+    );
+
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  };
+
+  const handleAddToCart = item => {
+    const data = {
+      id: item?.id,
+      title: item?.title,
+      image: item?.images?.[0],
+      price: item?.price,
+    };
+    dispatch(addProduct(data));
+
+    setTimeout(() => {
+      dispatch(cartSuccessReset());
+    }, 500);
+  };
+
   if (loading) return <Loading></Loading>;
 
   return (
     <ScrollView style={{ flex: 1 }}>
       <View
         style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#CFD8DC',
           width: width,
-          height: 280,
-          position: 'relative',
+          ...styles.carouselContainer,
         }}
       >
-        <Image
-          source={{ uri: `${product?.images?.[0]}` }}
-          style={{ width: width - 10, height: 200 }}
-          resizeMode="contain"
-        ></Image>
+        <FlatList
+          data={product?.images}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <View style={{ justifyContent: 'center' }}>
+              <Image
+                source={{ uri: item }}
+                style={{ width: width, height: 250 }}
+                resizeMode="contain"
+              ></Image>
+            </View>
+          )}
+        ></FlatList>
+
         <TouchableOpacity
-          style={{
-            position: 'absolute',
-            top: 20,
-            right: 40,
-            backgroundColor: '#ECEFF1',
-            padding: 5,
-            borderRadius: 5,
-            elevation: 5,
-          }}
+          style={styles.addToFavoriteBtnContainer}
+          onPress={() => addToFavorite(product)}
         >
           <FontAwesome5 name="heart" size={22} color={'#B0BEC5'} />
         </TouchableOpacity>
@@ -99,16 +133,7 @@ const ProductDetail = ({ navigation, route }) => {
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <View style={{ flexDirection: 'row', marginRight: 10 }}>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    backgroundColor: '#CFD8DC',
-                    borderRadius: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
+                <View style={styles.selectImageContainer}>
                   <Image
                     source={{ uri: `${item}` }}
                     style={{ width: 30, height: 30 }}
@@ -123,65 +148,20 @@ const ProductDetail = ({ navigation, route }) => {
           <Text style={{ fontWeight: 500 }}>Select Size</Text>
 
           <View style={{ flexDirection: 'row', gap: 20 }}>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#78909C', fontSize: 15 }}>S</Text>
+            <View style={styles.selectSizeBox}>
+              <Text style={styles.sizeText}>S</Text>
             </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#78909C', fontSize: 15 }}>M</Text>
+            <View style={styles.selectSizeBox}>
+              <Text style={styles.sizeText}>M</Text>
             </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#78909C', fontSize: 15 }}>L</Text>
+            <View style={styles.selectSizeBox}>
+              <Text style={styles.sizeText}>L</Text>
             </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#78909C', fontSize: 15 }}>XL</Text>
+            <View style={styles.selectSizeBox}>
+              <Text style={styles.sizeText}>XL</Text>
             </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#78909C', fontSize: 15 }}>XXL</Text>
+            <View style={styles.selectSizeBox}>
+              <Text style={styles.sizeText}>XXL</Text>
             </View>
           </View>
         </View>
@@ -189,16 +169,7 @@ const ProductDetail = ({ navigation, route }) => {
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
           <Text style={{ fontWeight: 500 }}>Quantity</Text>
           <View style={{ flexDirection: 'row', gap: 10 }}>
-            <TouchableOpacity
-              style={{
-                width: 35,
-                height: 35,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+            <TouchableOpacity style={styles.decreaseBtn}>
               <FontAwesome5 name="minus" size={17} color="white" />
             </TouchableOpacity>
             <Text
@@ -214,16 +185,7 @@ const ProductDetail = ({ navigation, route }) => {
             >
               01
             </Text>
-            <TouchableOpacity
-              style={{
-                width: 35,
-                height: 35,
-                backgroundColor: '#64B5F6',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+            <TouchableOpacity style={styles.increaseBtn}>
               <FontAwesome5 name="plus" size={17} color="white" />
             </TouchableOpacity>
           </View>
@@ -231,14 +193,7 @@ const ProductDetail = ({ navigation, route }) => {
 
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
           <Text style={{ color: 'black', fontWeight: 500 }}>Description</Text>
-          <Text
-            style={{
-              color: 'grey',
-              fontWeight: 500,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
+          <Text style={styles.descriptionMore}>
             {showMore
               ? `${product?.description} `
               : `${product?.description?.slice(0, 90)}....   `}
@@ -267,69 +222,156 @@ const ProductDetail = ({ navigation, route }) => {
                   setShowMore(!showMore);
                 }}
               >
-                <Text
-                  style={{
-                    textAlignVertical: 'center',
-                    textAlignVertical: 'center',
-                    textAlign: 'center',
-                    color: 'grey',
-                    fontWeight: 800,
-                  }}
-                >
-                  show less
-                </Text>
+                <Text style={styles.showLessText}>show less</Text>
               </TouchableOpacity>
             ) : null}
           </Text>
         </View>
       </View>
 
-      <View
-        style={{
-          paddingHorizontal: 10,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginTop: 20,
-        }}
-      >
+      <View style={styles.actionRowContainer}>
         <TouchableOpacity
           style={{
             width: width / 2.5,
-            height: 50,
-            borderWidth: 1,
-            borderColor: '#42A5F5',
-            borderRadius: 40,
-            justifyContent: 'center',
-            alignItems: 'center',
+            ...styles.actionBtn,
           }}
+          onPress={() => handleAddToCart(product)}
         >
-          <Text style={{ color: '#42A5F5', fontWeight: 500, fontSize: 18 }}>
-            Add to Cart
-          </Text>
+          <Text style={styles.addToCartText}>Add to Cart</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
             width: width / 2.5,
-            height: 50,
-            borderRadius: 40,
-            justifyContent: 'center',
-            alignItems: 'center',
             backgroundColor: '#42A5F5',
-            elevation: 1,
+            ...styles.actionBtn,
           }}
           onPress={() => {
             navigation.navigate('Success');
           }}
         >
-          <Text style={{ color: 'white', fontWeight: 500, fontSize: 18 }}>
-            Buy Now
-          </Text>
+          <Text style={styles.buyNowText}>Buy Now</Text>
         </TouchableOpacity>
       </View>
+
+      {success && (
+        <View style={styles.popUpCard}>
+          <Text style={styles.popupText}>Product Added To addFavorite</Text>
+        </View>
+      )}
+
+      {cart_success && (
+        <View style={styles.popUpCard}>
+          <Text style={styles.popupText}>Product Added To Cart</Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 export default ProductDetail;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  carouselContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#CFD8DC',
+    height: 280,
+    position: 'relative',
+  },
+  addToFavoriteBtnContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 40,
+    backgroundColor: '#ECEFF1',
+    padding: 5,
+    borderRadius: 5,
+    elevation: 5,
+  },
+  selectImageContainer: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#CFD8DC',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectSizeBox: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#CFD8DC',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sizeText: {
+    color: '#78909C',
+    fontSize: 15,
+  },
+  decreaseBtn: {
+    width: 35,
+    height: 35,
+    backgroundColor: '#CFD8DC',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  increaseBtn: {
+    width: 35,
+    height: 35,
+    backgroundColor: '#64B5F6',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  descriptionMore: {
+    color: 'grey',
+    fontWeight: 500,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  showLessText: {
+    textAlignVertical: 'center',
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    color: 'grey',
+    fontWeight: 800,
+  },
+  actionRowContainer: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  actionBtn: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#42A5F5',
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addToCartText: {
+    color: '#42A5F5',
+    fontWeight: 500,
+    fontSize: 18,
+  },
+  buyNowText: {
+    color: 'white',
+    fontWeight: 500,
+    fontSize: 18,
+  },
+  popUpCard: {
+    backgroundColor: 'white',
+    width: 250,
+    padding: 10,
+    position: 'absolute',
+    borderRadius: 20,
+    elevation: 10,
+    bottom: 80,
+    left: 60,
+  },
+  popupText: {
+    textAlign: 'center',
+    fontWeight: 400,
+  },
+});

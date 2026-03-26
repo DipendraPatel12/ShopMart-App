@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 const Loading = () => {
   return (
@@ -10,7 +10,8 @@ const Loading = () => {
         alignContent: 'center',
       }}
     >
-      <Text style={{ alignSelf: 'center' }}> Loading...</Text>
+      {/* <Text style={{ alignSelf: 'center' }}> Loading...</Text> */}
+      <ActivityIndicator size="large"></ActivityIndicator>
     </View>
   );
 };

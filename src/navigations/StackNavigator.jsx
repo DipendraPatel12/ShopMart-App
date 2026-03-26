@@ -16,6 +16,8 @@ import Notification from '../screens/Notification/Notification';
 import CategoryProduct from '../screens/CategoryProducts/CategoryProducts';
 import Success from '../screens/Success/Success';
 
+import Back from '../components/Back';
+
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
@@ -57,53 +59,9 @@ const StackNavigator = () => {
           headerTitleAlign: 'center',
           headerTitleStyle: { fontSize: 25 },
           headerShadowVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 4,
-                borderRadius: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 5,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                  color: 'grey',
-                }}
-              >
-                {'<'}
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <Back></Back>,
         })}
       />
-
-      {/* <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          headerTitle: '',
-          headerShadowVisible: false,
-          headerLeft: () => <ProfileView></ProfileView>,
-          headerRight: () => (
-            <View style={{ flexDirection: 'row', gap: 20 }}>
-              <TouchableOpacity>
-                <FontAwesome5 name="search" size={22} color="grey" />
-              </TouchableOpacity>
-
-              <TouchableOpacity>
-                <FontAwesome5 name="bell" size={22} color="grey" />
-              </TouchableOpacity>
-            </View>
-          ),
-        }}
-      /> */}
 
       <Stack.Screen
         name="MainTabs"
@@ -119,30 +77,7 @@ const StackNavigator = () => {
           headerTitleAlign: 'center',
           headerTitleStyle: { fontSize: 20 },
           headerShadowVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 4,
-                borderRadius: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 5,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                  color: 'grey',
-                }}
-              >
-                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <Back></Back>,
         })}
       />
 
@@ -154,30 +89,7 @@ const StackNavigator = () => {
           headerTitleAlign: 'center',
           headerTitleStyle: { fontSize: 20 },
           headerShadowVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 4,
-                borderRadius: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 5,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                  color: 'grey',
-                }}
-              >
-                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <Back></Back>,
         })}
       ></Stack.Screen>
 
@@ -189,30 +101,7 @@ const StackNavigator = () => {
           headerTitleAlign: 'center',
           headerTitleStyle: { fontSize: 20 },
           headerShadowVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 4,
-                borderRadius: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 5,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                  color: 'grey',
-                }}
-              >
-                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <Back></Back>,
         })}
       ></Stack.Screen>
 

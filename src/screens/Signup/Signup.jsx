@@ -8,8 +8,10 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RegisterUser } from '../../redux/slices/authSlice';
 const Signup = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [userData, setUserData] = useState({
     name: 'Nicolas',
     email: 'nico@gmail.com',
@@ -17,11 +19,11 @@ const Signup = ({ navigation }) => {
     avatar: 'https://picsum.photos/800',
   });
 
-  useEffect(() => {
-    console.warn(userData);
-  }, [userData]);
+  // useEffect(() => {
+  //   console.warn(userData);
+  // }, [userData]);
 
-  const { token } = useSelector(state => state.auth);
+  const { token, success, loading, error } = useSelector(state => state.auth);
   useEffect(() => {
     if (token) {
       navigation.navigate('MainTabs', {
@@ -44,23 +46,14 @@ const Signup = ({ navigation }) => {
       Alert.alert('Password Did not Match!');
       return;
     }
-    try {
-      const res = await fetch('https://fakestoreapi.com/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      });
 
-      if (res.ok) {
-        Alert.alert('Registered Successfully');
-        navigation.navigate('Login');
-      } else {
-        Alert.alert('Signup Failed');
-      }
-    } catch (error) {
-      console.warn(error);
-    }
+    dispatch(RegisterUser(userData));
   };
+
+  if (success) {
+    Alert.alert('Registered Successfully');
+    // navigation.navigate('Login');
+  }
 
   return (
     <View
@@ -153,7 +146,6 @@ const Signup = ({ navigation }) => {
           ></TextInput>
         </View>
         <View style={{ marginBottom: 30, flexDirection: 'row' }}>
-          {/* <CheckBox></CheckBox> */}
           <Text>I agree with the </Text>
           <Text style={{ color: '#42A5F5' }}> Terms & Conditions</Text>
         </View>
@@ -163,9 +155,21 @@ const Signup = ({ navigation }) => {
           onPress={() => signup()}
         >
           <Text style={{ textAlign: 'center', padding: 16, color: 'white' }}>
-            Sign Up
+            {loading ? 'Signing up' : 'Sign Up'}
           </Text>
         </TouchableOpacity>
+        <View>
+          <Text
+            style={{
+              textAlign: 'center',
+              marginTop: 20,
+              color: 'red',
+              fontWeight: '500',
+            }}
+          >
+            {error}
+          </Text>
+        </View>
       </View>
 
       <View

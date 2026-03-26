@@ -11,7 +11,8 @@ import { getUserProfile } from '../../redux/slices/authSlice';
 const Home = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { loading, error, products } = useSelector(state => state.product);
+  const { loading, products } = useSelector(state => state.product);
+  const { cart_success } = useSelector(state => state.cart);
   // const productsArray = [
   //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
   //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
@@ -45,6 +46,11 @@ const Home = ({ navigation }) => {
         }
         renderItem={({ item }) => <ProductRender item={item} />}
       />
+      {cart_success && (
+        <View style={styles.popUpCard}>
+          <Text style={styles.popUpText}>Product Added To Cart</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -52,5 +58,19 @@ const Home = ({ navigation }) => {
 export default Home;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'white' },
+  container: { flex: 1, backgroundColor: 'white', position: 'relative' },
+  popUpCard: {
+    backgroundColor: 'white',
+    width: 250,
+    padding: 10,
+    position: 'absolute',
+    borderRadius: 20,
+    elevation: 10,
+    bottom: 80,
+    left: 60,
+  },
+  popUpText: {
+    textAlign: 'center',
+    fontWeight: 400,
+  },
 });

@@ -3,11 +3,13 @@ import React from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct } from '../redux/slices/cartSlice';
+import { addProduct, cartSuccessReset } from '../redux/slices/cartSlice';
+import Loading from './Loading';
 
 const ProductRender = ({ item }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { loading } = useSelector(state => state.product);
 
   const handleAddToCart = item => {
     const data = {
@@ -15,10 +17,15 @@ const ProductRender = ({ item }) => {
       title: item?.title,
       image: item?.images?.[0],
       price: item?.price,
-      quantity: 1,
     };
     dispatch(addProduct(data));
+
+    setTimeout(() => {
+      dispatch(cartSuccessReset(false));
+    }, 1000);
   };
+
+  if (loading) return <Loading></Loading>;
 
   return (
     <View style={styles.productContainer}>
@@ -52,6 +59,8 @@ const ProductRender = ({ item }) => {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
+
+      <View></View>
     </View>
   );
 };

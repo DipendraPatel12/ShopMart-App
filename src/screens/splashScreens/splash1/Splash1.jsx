@@ -1,9 +1,10 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash1 = ({ navigation }) => {
+
   useEffect(() => {
     const checkToken = async () => {
       try {
@@ -15,7 +16,6 @@ const Splash1 = ({ navigation }) => {
             routes: [{ name: 'MainTabs' }],
           });
         }
-        console.warn('sdfs');
       } catch (e) {
         console.warn('Error reading token', e);
       }

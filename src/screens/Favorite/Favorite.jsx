@@ -1,41 +1,63 @@
-import { FlatList, View } from 'react-native';
+import { FlatList, View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { useEffect } from 'react';
 
 import ProductRender from '../../components/ProductRender';
-import { useDispatch, useSelector } from 'react-redux';
-import { getProducts } from '../../redux/slices/productSlice';
-import Loading from '../../components/Loading';
+import { useSelector } from 'react-redux';
 
-const Favorite = ({ navigation }) => {
-  const dispatch = useDispatch();
-  // const productsArray = [
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  // ];
-  useEffect(() => {
-    dispatch(getProducts());
-  }, []);
-
-  const { loading, error, products } = useSelector(state => state.product);
-
-  if (loading) return <Loading></Loading>;
+const Favorite = () => {
+  const { favoriteProducts } = useSelector(state => state.favorite);
+  const { cart_success } = useSelector(state => state.cart);
+  console.warn(favoriteProducts);
+  if (favoriteProducts.length === 0)
+    return (
+      <View style={styles.noFavoriteCard}>
+        <Text style={{ alignSelf: 'center' }}> No Favorites !</Text>
+      </View>
+    );
   return (
     <View style={styles.container}>
       <FlatList
-        data={products}
+        data={favoriteProducts}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-evenly' }}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item?.id?.toString()}
         renderItem={({ item }) => <ProductRender item={item} />}
       />
+
+      {cart_success && (
+        <View style={styles.cartSuccess}>
+          <Text style={styles.cartSuccessText}>Product Added To Cart</Text>
+        </View>
+      )}
     </View>
   );
 };
 
 export default Favorite;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  noFavoriteCard: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  cartSuccess: {
+    backgroundColor: 'white',
+    width: 250,
+    padding: 10,
+    position: 'absolute',
+    borderRadius: 20,
+    elevation: 10,
+    bottom: 80,
+    left: 60,
+  },
+  cartSuccessText: {
+    textAlign: 'center',
+    fontWeight: 400,
+  },
+});

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Category from "../../components/Category";
-import { act } from "react";
+
 
 export const getProducts = createAsyncThunk(
     "product/getProduct",
@@ -20,6 +20,7 @@ export const getProducts = createAsyncThunk(
 
             return data;
         } catch (error) {
+            console.log("Error whiele getting products ", error)
             return rejectWithValue(error.message);
         }
     }
@@ -41,12 +42,13 @@ export const singleProduct = createAsyncThunk("product/singleProduct", async (id
 
         return data;
     } catch (error) {
+        console.log("Error while getting single product details ", error)
         return rejectWithValue(error.message);
     }
 })
 
 
-export const getCategories = createAsyncThunk("product/getCategories", async (id, { rejectWithValue }) => {
+export const getCategories = createAsyncThunk("product/getCategories", async (_, { rejectWithValue }) => {
     try {
         console.log("API called");
 
@@ -62,6 +64,7 @@ export const getCategories = createAsyncThunk("product/getCategories", async (id
 
         return data;
     } catch (error) {
+        console.error("Error While getting Categories", error)
         return rejectWithValue(error.message);
     }
 })
@@ -82,6 +85,7 @@ export const getCategoryProduct = createAsyncThunk("product/getCategoryProduct",
 
         return data;
     } catch (error) {
+        console.log("Error while Getting Category Products", error)
         return rejectWithValue(error.message);
     }
 })

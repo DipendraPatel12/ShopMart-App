@@ -1,21 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-
 const favoriteProductSlice = createSlice({
     name: 'favorite',
     initialState: {
-        favoriteProduct: [],
+        favoriteProducts: [],
+        success: false
     },
     reducers: {
         addFavorite: (state, action) => {
-            state.cart.push(action.payload);
+            const exists = state.favoriteProducts.find(
+                item => item.id === action.payload.id
+            );
+
+            if (exists) {
+                // state.favoriteProducts = state.favoriteProducts.filter(
+                //     item => item.id !== action.payload.id
+                // );
+                state.success = true
+                return;
+            } else {
+                state.favoriteProducts.push(action.payload);
+                state.success = true
+
+
+            }
         },
-        removeFromFavorite: (state, action) => {
-            state.cart = state.cart.filter(item => item.id !== action.payload.id)
+        resetSuccess: (state, action) => {
+            state.success = false
         }
-    },
+
+    }
 });
 
-export const { addFavorite, removeFromFavorite } =
-    favoriteProductSlice.actions;
+export const { addFavorite, resetSuccess } = favoriteProductSlice.actions;
 export default favoriteProductSlice.reducer;
+

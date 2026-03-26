@@ -13,9 +13,9 @@ const ProfileView = () => {
       <View style={{}}>
         <Image
           source={
-            loading || !user?.avatar
+            loading || !user
               ? require('../assets/images/splash1.png')
-              : { uri: user.avatar }
+              : { uri: user ? user.avatar : '' }
           }
           style={{
             width: 50,
@@ -25,12 +25,16 @@ const ProfileView = () => {
           }}
         />
       </View>
+      
       <View style={{ justifyContent: 'center' }}>
-        <Text style={{ color: 'grey' }}>Welcome</Text>
+        <Text style={{ color: 'grey' }}>
+          {loading || !user ? '' : 'Welcome'}
+        </Text>
         <Text style={{ fontWeight: 500, fontSize: 15 }}>
-          {loading ? 'User' : `${user?.name}`}
+          {loading || !user ? '' : `${user?.name}`}
         </Text>
       </View>
+
     </TouchableOpacity>
   );
 };

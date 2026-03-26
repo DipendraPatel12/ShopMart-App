@@ -1,5 +1,5 @@
-import { TouchableOpacity, Text, View, Image } from 'react-native';
-import React from 'react';
+import { TouchableOpacity, Text, View, Image, TextInput } from 'react-native';
+import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home/Home';
 import Cart from '../screens/Cart/Cart';
@@ -9,13 +9,16 @@ import ProfileView from '../components/ProfileView';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '../redux/slices/cartSlice';
+import Back from '../components/Back';
 
 const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
+  const [searchBar, setSearchBar] = useState(false);
   const dispatch = useDispatch();
 
   return (
     <Tab.Navigator screenOptions={{ tabBarStyle: { height: 60 } }}>
+      {/* Home Screen */}
       <Tab.Screen
         name="Home"
         component={Home}
@@ -24,16 +27,55 @@ const TabNavigator = () => {
           headerShadowVisible: false,
           headerLeft: () => <ProfileView></ProfileView>,
           headerRight: () => (
-            <View style={{ flexDirection: 'row', gap: 20, padding: 10 }}>
-              <TouchableOpacity>
-                <FontAwesome5 name="search" size={22} color="grey" />
-              </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: 'row',
+                gap: 20,
+                padding: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {searchBar && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: 300,
+                    borderWidth: 0.5,
+                    backgroundColor: '#ECEFF1',
+                    borderRadius: 20,
+                    marginRight: 50,
+                  }}
+                >
+                  <TextInput
+                    placeholderTextColor={'grey'}
+                    placeholder="search here..."
+                    style={{ width: 250, paddingLeft: 10, color: 'black' }}
+                  ></TextInput>
+                  <TouchableOpacity
+                    style={{ marginRight: 10 }}
+                    onPress={() => setSearchBar(!searchBar)}
+                  >
+                    <FontAwesome5 name="window-close" size={22} color="grey" />
+                  </TouchableOpacity>
+                </View>
+              )}
+              {!searchBar && (
+                <TouchableOpacity onPress={() => setSearchBar(!searchBar)}>
+                  <FontAwesome5 name="search" size={22} color="grey" />
+                </TouchableOpacity>
+              )}
 
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Notification')}
-              >
-                <FontAwesome5 name="bell" size={22} color="grey" />
-              </TouchableOpacity>
+              {!searchBar && (
+                <TouchableOpacity
+                  style={{ marginRight: 10 }}
+                  onPress={() => navigation.navigate('Notification')}
+                >
+                  <FontAwesome5 name="bell" size={22} color="grey" />
+                </TouchableOpacity>
+              )}
             </View>
           ),
           tabBarIcon: ({ focused }) => (
@@ -46,37 +88,14 @@ const TabNavigator = () => {
         })}
       />
 
+      {/* cart Screen */}
       <Tab.Screen
         name="Cart"
         component={Cart}
         options={({ navigation }) => ({
           headerTitleAlign: 'center',
           headerShadowVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 4,
-                borderRadius: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 5,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                  color: 'grey',
-                }}
-              >
-                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <Back></Back>,
           headerRight: () => (
             <TouchableOpacity
               style={{
@@ -104,37 +123,14 @@ const TabNavigator = () => {
         })}
       ></Tab.Screen>
 
+      {/* Favorite Screen */}
       <Tab.Screen
         name="Favorite"
         component={Favorite}
         options={({ navigation }) => ({
           headerTitleAlign: 'center',
           headerShadowVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 4,
-                borderRadius: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 5,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                  color: 'grey',
-                }}
-              >
-                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <Back></Back>,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="heart"
@@ -144,37 +140,15 @@ const TabNavigator = () => {
           ),
         })}
       ></Tab.Screen>
+
+      {/* Profile Screen */}
       <Tab.Screen
         name="Profile"
         component={Profile}
         options={({ navigation }) => ({
           headerTitleAlign: 'center',
           headerShadowVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 4,
-                borderRadius: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 5,
-                  paddingLeft: 15,
-                  paddingRight: 15,
-                  color: 'grey',
-                }}
-              >
-                <FontAwesome5 name="angle-left" size={22} color={'#1E88E5'} />
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <Back></Back>,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="user"

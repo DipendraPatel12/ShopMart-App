@@ -13,7 +13,7 @@ import { loginUser } from '../../redux/slices/authSlice';
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('dipendra@gmail.com');
+  const [email, setEmail] = useState('nico@gmail.com');
   const [password, setPassword] = useState('1234');
 
   const { loading, error, token } = useSelector(state => state.auth);
@@ -27,14 +27,8 @@ const Login = ({ navigation }) => {
   }, [token]);
 
   // useEffect(() => {
-  //   if (error) {
-  //     Alert.alert('Login Failed', error);
-  //   }
-  // }, [error]);
-
-  useEffect(() => {
-    console.warn(email, password);
-  }, [email, password]);
+  //   console.warn(email, password);
+  // }, [email, password]);
 
   const login = async () => {
     if (!email || !password) {
@@ -50,96 +44,51 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-        justifyContent: 'space-between',
-      }}
-    >
+    <View style={styles.mainContainer}>
       <View style={{ padding: 30 }}>
-        <View
-          style={{ justifyContent: 'flex-start', gap: 10, marginBottom: 10 }}
-        >
+        <View style={styles.fieldContainer}>
           <Text style={{ fontWeight: 400 }}>Email</Text>
           <TextInput
             placeholder="Enter Name"
             placeholderTextColor="grey"
             value={email}
-            style={{
-              borderWidth: 1,
-              borderRadius: 20,
-              height: 50,
-              padding: 10,
-              borderColor: '#B0BEC5',
-              color: 'black',
-            }}
+            style={styles.textInputStyle}
             onChangeText={text => setEmail(text)}
           ></TextInput>
         </View>
 
-        <View
-          style={{ justifyContent: 'flex-start', gap: 10, marginBottom: 10 }}
-        >
+        <View style={styles.fieldContainer}>
           <Text style={{ fontWeight: 400 }}>Password</Text>
           <TextInput
             placeholder="Enter Password"
             placeholderTextColor="grey"
             value={password}
-            style={{
-              borderWidth: 1,
-              borderRadius: 20,
-              height: 50,
-              padding: 10,
-              borderColor: '#B0BEC5',
-              color: 'black',
-            }}
-            // secureTextEntry
+            style={styles.textInputStyle}
             onChangeText={text => setPassword(text)}
           ></TextInput>
         </View>
 
         <TouchableOpacity style={{ marginBottom: 20 }}>
-          <Text
-            style={{ color: '#42A5F5', textAlign: 'right', marginRight: 5 }}
-          >
-            Forgot Password?
-          </Text>
+          <Text style={styles.forgetBtnText}>Forgot Password?</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={{ width: 330, backgroundColor: '#42A5F5', borderRadius: 20 }}
+          style={styles.loginBtnContainer}
           onPress={() => login()}
         >
-          {loading ? (
-            <Text
-              style={{
-                textAlign: 'center',
-                padding: 16,
-                color: 'white',
-                fontWeight: 500,
-              }}
-            >
-              Logging in...
-            </Text>
-          ) : (
-            <Text style={{ textAlign: 'center', padding: 16, color: 'white' }}>
-              Login
-            </Text>
-          )}
+          <Text style={styles.loginBtnText}>
+            {loading ? 'Logging in...' : 'Login'}
+          </Text>
         </TouchableOpacity>
+
+        <View>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
       </View>
 
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 20,
-          marginBottom: 40,
-        }}
-      >
+      <View style={styles.bottomNavIconContainer}>
         <Text>Or Login With</Text>
-        <View style={{ flexDirection: 'row', gap: 20 }}>
+        <View style={styles.iconContainer}>
           <TouchableOpacity>
             <FontAwesome5 name="facebook" size={35} color="#1877F2" />
           </TouchableOpacity>
@@ -161,4 +110,55 @@ const Login = ({ navigation }) => {
 
 export default Login;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+  },
+  fieldContainer: {
+    justifyContent: 'flex-start',
+    gap: 10,
+    marginBottom: 10,
+  },
+  textInputStyle: {
+    borderWidth: 1,
+    borderRadius: 20,
+    height: 50,
+    padding: 10,
+    borderColor: '#B0BEC5',
+    color: 'black',
+  },
+  forgetBtnText: {
+    color: '#42A5F5',
+    textAlign: 'right',
+    marginRight: 5,
+  },
+  loginBtnContainer: {
+    width: 330,
+    backgroundColor: '#42A5F5',
+    borderRadius: 20,
+  },
+  loginBtnText: {
+    textAlign: 'center',
+    padding: 16,
+    color: 'white',
+    fontWeight: 500,
+  },
+  errorText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: 'red',
+    fontWeight: '500',
+  },
+  bottomNavIconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+    marginBottom: 40,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    gap: 20,
+  },
+});
