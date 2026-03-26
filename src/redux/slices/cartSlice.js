@@ -17,10 +17,16 @@ const cartSlice = createSlice({
 
       if (product) {
         product.quantity += 1;
-
+        product.total = product.price * product.quantity
         state.cart_success = true;
       } else {
-        state.cart.push({ ...action.payload, quantity: 1 });
+
+        if (action.payload.quantity) {
+          state.cart.push({ ...action.payload, quantity: action.payload.quantity, total: action.payload.price * action.payload.quantity });
+        }
+        else {
+          state.cart.push({ ...action.payload, quantity: 1, total: action.payload.price * 1 });
+        }
         state.cart_success = true;
       }
 
@@ -33,6 +39,7 @@ const cartSlice = createSlice({
       );
       if (product) {
         product.quantity += 1;
+        product.total = product.quantity * product.price;
       }
       updateTotals(state);
     },
@@ -44,6 +51,8 @@ const cartSlice = createSlice({
 
       if (product && product.quantity > 1) {
         product.quantity -= 1;
+
+        product.total = product.quantity * product.price;
       }
 
       updateTotals(state);
@@ -67,7 +76,7 @@ const updateTotals = (state) => {
   );
 
   state.totalPrice = state.cart.reduce(
-    (prev, pro) => prev + pro.price * pro.quantity,
+    (prev, pro) => prev + pro.total,
     0
   );
 };

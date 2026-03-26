@@ -61,7 +61,7 @@ const Cart = ({ navigation }) => {
                     <Text style={{ color: 'grey', fontWeight: 500 }}>
                       Quantity: {item?.quantity}
                     </Text>
-                    <Text style={{ fontWeight: 800 }}>$ {item?.price}</Text>
+                    <Text style={{ fontWeight: 800 }}>$ {item?.total}</Text>
                   </View>
 
                   <View style={{ justifyContent: 'space-between' }}>
@@ -208,7 +208,3 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
-
-
-
-
