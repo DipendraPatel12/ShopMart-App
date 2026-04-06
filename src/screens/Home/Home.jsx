@@ -5,7 +5,10 @@ import Category from '../../components/Category';
 import ProductRender from '../../components/ProductRender';
 import Loading from '../../components/Loading';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, getProducts } from '../../redux/slices/productSlice';
+import {
+  extractCategoriesFromProducts,
+  getProducts,
+} from '../../redux/slices/productSlice';
 import { getUserProfile } from '../../redux/slices/authSlice';
 
 const Home = ({ navigation }) => {
@@ -26,7 +29,9 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     dispatch(getUserProfile());
     dispatch(getProducts());
-    dispatch(getCategories());
+    setTimeout(() => {
+      dispatch(extractCategoriesFromProducts());
+    }, 1500);
   }, []);
 
   if (loading) return <Loading></Loading>;
@@ -46,6 +51,7 @@ const Home = ({ navigation }) => {
         }
         renderItem={({ item }) => <ProductRender item={item} />}
       />
+
       {cart_success && (
         <View style={styles.popUpCard}>
           <Text style={styles.popUpText}>Product Added To Cart</Text>
@@ -58,7 +64,11 @@ const Home = ({ navigation }) => {
 export default Home;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'white', position: 'relative' },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    position: 'relative',
+  },
   popUpCard: {
     backgroundColor: 'white',
     width: 250,

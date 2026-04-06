@@ -2,9 +2,10 @@ import { StyleSheet, View, Image, Dimensions } from 'react-native';
 import React, { useRef } from 'react';
 import Carousel, { Pagination } from 'react-native-reanimated-carousel';
 
-import img1 from '../assets/images/splash2.png';
+import img3 from '../assets/images/splash2.png';
+import img1 from '../assets/images/sale.png';
 import img2 from '../assets/images/splash1.png';
-import img3 from '../assets/images/sale.png';
+
 import { useSharedValue } from 'react-native-reanimated';
 const width = Dimensions.get('window').width;
 const Slider = () => {

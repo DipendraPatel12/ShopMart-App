@@ -13,11 +13,10 @@ const favoriteProductSlice = createSlice({
             );
 
             if (exists) {
-                // state.favoriteProducts = state.favoriteProducts.filter(
-                //     item => item.id !== action.payload.id
-                // );
-                state.success = true
-                return;
+                state.favoriteProducts = state.favoriteProducts.filter(
+                    item => item.id !== action.payload.id
+                );
+
             } else {
                 state.favoriteProducts.push(action.payload);
                 state.success = true
@@ -25,7 +24,7 @@ const favoriteProductSlice = createSlice({
 
             }
         },
-        resetSuccess: (state, action) => {
+        resetSuccess: (state,) => {
             state.success = false
         }
 

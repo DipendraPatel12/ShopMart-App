@@ -25,7 +25,7 @@ const ProfileView = () => {
           }}
         />
       </View>
-      
+
       <View style={{ justifyContent: 'center' }}>
         <Text style={{ color: 'grey' }}>
           {loading || !user ? '' : 'Welcome'}
@@ -34,7 +34,6 @@ const ProfileView = () => {
           {loading || !user ? '' : `${user?.name}`}
         </Text>
       </View>
-
     </TouchableOpacity>
   );
 };

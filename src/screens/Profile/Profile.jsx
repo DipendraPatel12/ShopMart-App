@@ -5,7 +5,7 @@ import { logout } from '../../redux/slices/authSlice';
 import { CommonActions } from '@react-navigation/native';
 const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
-  
+
   const handleLogout = () => {
     dispatch(logout());
 

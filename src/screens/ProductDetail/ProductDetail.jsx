@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
-import { singleProduct } from '../../redux/slices/productSlice';
+import { productLiked, singleProduct } from '../../redux/slices/productSlice';
 import Loading from '../../components/Loading';
 import { resetSuccess, addFavorite } from '../../redux/slices/favoriteProduct';
 import { addProduct, cartSuccessReset } from '../../redux/slices/cartSlice';
@@ -41,15 +41,18 @@ const ProductDetail = ({ navigation, route }) => {
   }, [route?.params]);
 
   const addToFavorite = () => {
+    dispatch(productLiked(product?.id));
     dispatch(
       addFavorite({
         id: product?.id,
         title: product?.title,
-        images: product?.images,
+        image: product?.image,
         rating: 5.2,
         price: product?.price,
+        liked: true,
       }),
     );
+    dispatch(singleProduct(product?.id));
 
     setTimeout(() => {
       dispatch(resetSuccess());
@@ -60,7 +63,7 @@ const ProductDetail = ({ navigation, route }) => {
     const data = {
       id: item?.id,
       title: item?.title,
-      image: item?.images?.[0],
+      image: item?.image,
       price: item?.price,
       quantity,
     };
@@ -91,27 +94,23 @@ const ProductDetail = ({ navigation, route }) => {
           ...styles.carouselContainer,
         }}
       >
-        <FlatList
-          data={product?.images}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <View style={{ justifyContent: 'center' }}>
-              <Image
-                source={{ uri: item }}
-                style={{ width: width, height: 250 }}
-                resizeMode="contain"
-              ></Image>
-            </View>
-          )}
-        ></FlatList>
+        <View style={{ justifyContent: 'center' }}>
+          <Image
+            source={{ uri: product.image }}
+            style={{ width: width, height: 250 }}
+            resizeMode="contain"
+          ></Image>
+        </View>
 
         <TouchableOpacity
           style={styles.addToFavoriteBtnContainer}
           onPress={() => addToFavorite(product)}
         >
-          <FontAwesome5 name="heart" size={22} color={'#B0BEC5'} />
+          {product?.liked ? (
+            <FontAwesome5 name="heart" size={22} color={'red'} solid />
+          ) : (
+            <FontAwesome5 name="heart" size={22} color={'#B0BEC5'} />
+          )}
         </TouchableOpacity>
       </View>
 
@@ -138,22 +137,14 @@ const ProductDetail = ({ navigation, route }) => {
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
           <Text style={{ fontWeight: 500 }}>Select Color</Text>
 
-          <FlatList
-            data={product.images}
-            horizontal
-            keyExtractor={index => index.toString()}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <View style={{ flexDirection: 'row', marginRight: 10 }}>
-                <View style={styles.selectImageContainer}>
-                  <Image
-                    source={{ uri: `${item}` }}
-                    style={{ width: 30, height: 30 }}
-                  ></Image>
-                </View>
-              </View>
-            )}
-          ></FlatList>
+          <View style={{ flexDirection: 'row', marginRight: 10 }}>
+            <View style={styles.selectImageContainer}>
+              <Image
+                source={{ uri: `${product.image}` }}
+                style={{ width: 30, height: 30 }}
+              ></Image>
+            </View>
+          </View>
         </View>
 
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
@@ -227,6 +218,7 @@ const ProductDetail = ({ navigation, route }) => {
                   style={{
                     color: 'grey',
                     fontWeight: 800,
+                    textAlignVertical: 'center',
                   }}
                 >
                   show more
@@ -271,11 +263,11 @@ const ProductDetail = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
-      {success && (
+      {/* {success && (
         <View style={styles.popUpCard}>
           <Text style={styles.popupText}>Product Added To addFavorite</Text>
         </View>
-      )}
+      )} */}
 
       {cart_success && (
         <View style={styles.popUpCard}>

@@ -38,6 +38,7 @@ export default Favorite;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
     position: 'relative',
   },
   noFavoriteCard: {

@@ -4,6 +4,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, cartSuccessReset } from '../redux/slices/cartSlice';
+import { addFavorite, resetSuccess } from '../redux/slices/favoriteProduct';
+import { productLiked } from '../redux/slices/productSlice';
 import Loading from './Loading';
 
 const ProductRender = ({ item }) => {
@@ -15,14 +17,32 @@ const ProductRender = ({ item }) => {
     const data = {
       id: item?.id,
       title: item?.title,
-      image: item?.images?.[0],
+      image: item?.image,
       price: item?.price,
     };
     dispatch(addProduct(data));
 
     setTimeout(() => {
       dispatch(cartSuccessReset(false));
-    }, 1000);
+    }, 500);
+  };
+
+  const addToFavorite = () => {
+    dispatch(productLiked(item?.id));
+    dispatch(
+      addFavorite({
+        id: item?.id,
+        title: item?.title,
+        image: item?.image,
+        price: item?.price,
+        rating: item?.rating?.rate,
+        liked: true,
+      }),
+    );
+
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 500);
   };
 
   if (loading) return <Loading></Loading>;
@@ -35,20 +55,36 @@ const ProductRender = ({ item }) => {
           navigation.navigate('ProductDetail', { product: item });
         }}
       >
+        <View style={{ position: 'absolute', zIndex: 1, top: 17, right: 22 }}>
+          <TouchableOpacity
+            style={styles.addToFavoriteBtnContainer}
+            onPress={() => addToFavorite(item)}
+          >
+            {item?.liked ? (
+              <FontAwesome5 name="heart" size={22} color={'red'} solid />
+            ) : (
+              <FontAwesome5 name="heart" size={22} color={'#B0BEC5'} />
+            )}
+          </TouchableOpacity>
+        </View>
         <View style={styles.productInnerCard}>
           <Image
-            source={{ uri: `${item?.images?.[0]}` }}
-            style={{ width: 120, height: 120 }}
-            resizeMode="cover"
+            source={{ uri: `${item?.image}` }}
+            style={{ width: 90, height: 90 }}
+            resizeMode="contain"
           ></Image>
         </View>
         <View style={styles.productTextContainer}>
           <Text style={styles.productText}>{item?.title?.slice(0, 10)}</Text>
-          <Text style={{ color: '#78909C', fontWeight: 500 }}>5.2</Text>
+          <Text style={{ color: '#78909C', fontWeight: 500 }}>
+            ⭐{item?.rating?.rate}
+          </Text>
         </View>
 
         <View style={styles.productPriceAndAddbtn}>
-          <Text style={{ fontSize: 13, fontWeight: 500 }}>${item?.price}</Text>
+          <Text style={{ fontSize: 13, fontWeight: 500, marginLeft: 5 }}>
+            ${item?.price}
+          </Text>
           <TouchableOpacity
             style={styles.addToCartBtn}
             onPress={() => {
@@ -68,7 +104,7 @@ const ProductRender = ({ item }) => {
 export default ProductRender;
 
 const styles = StyleSheet.create({
-  productContainer: { marginTop: 20 },
+  productContainer: { marginBottom: 20 },
   productCard: {
     width: 170,
     height: 230,
@@ -76,6 +112,7 @@ const styles = StyleSheet.create({
     borderColor: '#B0BEC5',
     borderRadius: 20,
     alignItems: 'center',
+    position: 'relative',
   },
   productInnerCard: {
     width: 140,
@@ -92,7 +129,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginLeft: 10,
   },
-  productText: { color: '#78909C', fontWeight: 500 },
+  productText: { color: '#78909C', fontWeight: 500, marginLeft: 5 },
   productPriceAndAddbtn: {
     flexDirection: 'row',
     justifyContent: 'space-between',

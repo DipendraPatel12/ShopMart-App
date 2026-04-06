@@ -17,7 +17,12 @@ const TabNavigator = () => {
   const dispatch = useDispatch();
 
   return (
-    <Tab.Navigator screenOptions={{ tabBarStyle: { height: 60 } }}>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: { height: 75, borderTopWidth: 0 },
+        tabBarItemStyle: { marginVertical: 10 },
+      }}
+    >
       {/* Home Screen */}
       <Tab.Screen
         name="Home"

@@ -61,7 +61,9 @@ const Cart = ({ navigation }) => {
                     <Text style={{ color: 'grey', fontWeight: 500 }}>
                       Quantity: {item?.quantity}
                     </Text>
-                    <Text style={{ fontWeight: 800 }}>$ {item?.total}</Text>
+                    <Text style={{ fontWeight: 800 }}>
+                      $ {item?.total.toFixed(2)}
+                    </Text>
                   </View>
 
                   <View style={{ justifyContent: 'space-between' }}>
@@ -108,7 +110,7 @@ const Cart = ({ navigation }) => {
             <Text style={styles.orderDetailText}>10</Text>
             <Text style={styles.orderDetailText}>45</Text>
             <Text style={{ ...styles.orderDetailText, fontSize: 20 }}>
-              $ {totalPrice + 55}
+              $ {(totalPrice + 55).toFixed(2)}
             </Text>
           </View>
         </View>
@@ -199,12 +201,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196F3',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 30,
   },
   paymentBtnText: {
     color: 'white',
     fontWeight: 800,
     padding: 20,
-    fontSize: 20,
+    fontSize: 16,
   },
 });

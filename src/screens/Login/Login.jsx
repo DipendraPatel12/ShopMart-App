@@ -13,22 +13,19 @@ import { loginUser } from '../../redux/slices/authSlice';
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('nico@gmail.com');
-  const [password, setPassword] = useState('1234');
+  const [email, setEmail] = useState('dipendra@gmail.com');
+  const [password, setPassword] = useState('12345678');
 
   const { loading, error, token } = useSelector(state => state.auth);
 
   useEffect(() => {
     if (token) {
-      navigation.navigate('MainTabs', {
-        screen: 'Home',
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainTabs' }],
       });
     }
   }, [token]);
-
-  // useEffect(() => {
-  //   console.warn(email, password);
-  // }, [email, password]);
 
   const login = async () => {
     if (!email || !password) {

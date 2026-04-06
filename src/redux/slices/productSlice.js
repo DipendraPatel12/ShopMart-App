@@ -1,6 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import Category from "../../components/Category";
-
 
 export const getProducts = createAsyncThunk(
     "product/getProduct",
@@ -8,7 +6,7 @@ export const getProducts = createAsyncThunk(
         try {
             console.log("API called");
 
-            const response = await fetch("https://api.escuelajs.co/api/v1/products");
+            const response = await fetch("https://fakestoreapi.com/products");
 
             const data = await response.json();
 
@@ -17,7 +15,6 @@ export const getProducts = createAsyncThunk(
             if (!response.ok) {
                 return rejectWithValue(data?.message || "Failed");
             }
-
             return data;
         } catch (error) {
             console.log("Error whiele getting products ", error)
@@ -25,70 +22,6 @@ export const getProducts = createAsyncThunk(
         }
     }
 );
-
-export const singleProduct = createAsyncThunk("product/singleProduct", async (id, { rejectWithValue }) => {
-    try {
-        console.log("API called");
-
-        const response = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
-
-        const data = await response.json();
-
-        console.log("data from redux singleProduct", data);
-
-        if (!response.ok) {
-            return rejectWithValue(data?.message || "Failed");
-        }
-
-        return data;
-    } catch (error) {
-        console.log("Error while getting single product details ", error)
-        return rejectWithValue(error.message);
-    }
-})
-
-
-export const getCategories = createAsyncThunk("product/getCategories", async (_, { rejectWithValue }) => {
-    try {
-        console.log("API called");
-
-        const response = await fetch(`https://api.escuelajs.co/api/v1/categories`);
-
-        const data = await response.json();
-
-        console.log("data from redux categories", data);
-
-        if (!response.ok) {
-            return rejectWithValue(data?.message || "Failed");
-        }
-
-        return data;
-    } catch (error) {
-        console.error("Error While getting Categories", error)
-        return rejectWithValue(error.message);
-    }
-})
-
-export const getCategoryProduct = createAsyncThunk("product/getCategoryProduct", async (id, { rejectWithValue }) => {
-    try {
-        console.log("API called", id);
-
-        const response = await fetch(`https://api.escuelajs.co/api/v1/categories/${Number(id)}/products`);
-
-        const data = await response.json();
-
-        console.log("data from redux for category Product", data);
-
-        if (!response.ok) {
-            return rejectWithValue(data?.message || "Failed");
-        }
-
-        return data;
-    } catch (error) {
-        console.log("Error while Getting Category Products", error)
-        return rejectWithValue(error.message);
-    }
-})
 
 
 
@@ -99,10 +32,54 @@ const productSlice = createSlice({
         product: {},
         categories: [],
         categoryProduct: [],
+        newCate: [],
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        productLiked: (state, action) => {
+            const product = state.products.find((item) => item.id === action.payload)
+            console.log(product)
+
+            if (product && product.liked) {
+                product.liked = false
+            } else {
+                product.liked = true
+            }
+
+            state.categoryProduct = state.categoryProduct.map(item =>
+                item.id === action.payload
+                    ? { ...item, liked: !item.liked }
+                    : item);
+        },
+
+
+
+        singleProduct: (state, action) => {
+            state.loading = true
+            const productdata = state.products.find((p) => p.id === action.payload)
+            if (productdata) {
+                state.product = productdata
+                state.loading = false
+            }
+        }
+        ,
+        extractCategoriesFromProducts: (state, action) => {
+            state.products.forEach(p => {
+                if (!state.categories.includes(p.category)) {
+                    state.categories.push(p.category);
+                }
+            });
+
+        }
+
+        ,
+        getCategoryRelatedData: (state, action) => {
+            state.categoryProduct = state.products.filter((product) => product.category === action.payload)
+        }
+
+
+    },
 
     extraReducers: (builder) => {
         builder
@@ -119,48 +96,10 @@ const productSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(singleProduct.pending, (state) => {
-                state.loading = true;
-            })
 
-            .addCase(singleProduct.fulfilled, (state, action) => {
-                state.loading = false;
-                state.product = action.payload;
-            })
 
-            .addCase(singleProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(getCategories.pending, (state) => {
-                state.loading = true;
-            })
-
-            .addCase(getCategories.fulfilled, (state, action) => {
-                state.loading = false;
-                state.categories = action.payload;
-            })
-
-            .addCase(getCategories.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(getCategoryProduct.pending, (state) => {
-                state.loading = true;
-            })
-
-            .addCase(getCategoryProduct.fulfilled, (state, action) => {
-                state.loading = false;
-                console.warn(action.payload)
-                state.categoryProduct = action.payload;
-            })
-
-            .addCase(getCategoryProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
 
     },
 });
-
+export const { productLiked, singleProduct, extractCategoriesFromProducts, getCategoryRelatedData } = productSlice.actions
 export default productSlice.reducer;

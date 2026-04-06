@@ -10,12 +10,13 @@ import React, { useEffect, useState } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
 import { RegisterUser } from '../../redux/slices/authSlice';
+
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
   const [userData, setUserData] = useState({
-    name: 'Nicolas',
-    email: 'nico@gmail.com',
-    password: '1234',
+    name: '',
+    email: '',
+    password: '',
     avatar: 'https://picsum.photos/800',
   });
 
@@ -24,13 +25,6 @@ const Signup = ({ navigation }) => {
   // }, [userData]);
 
   const { token, success, loading, error } = useSelector(state => state.auth);
-  useEffect(() => {
-    if (token) {
-      navigation.navigate('MainTabs', {
-        screen: 'Home',
-      });
-    }
-  }, [token]);
 
   const signup = async () => {
     if (
@@ -48,6 +42,13 @@ const Signup = ({ navigation }) => {
     }
 
     dispatch(RegisterUser(userData));
+
+    setUserData({
+      name: '',
+      email: '',
+      password: '',
+      avatar: 'https://picsum.photos/800',
+    });
   };
 
   if (success) {
@@ -80,7 +81,9 @@ const Signup = ({ navigation }) => {
               borderColor: '#B0BEC5',
               color: 'black',
             }}
-            onChangeText={text => setUserData({ ...userData, name: text })}
+            onChangeText={text =>
+              setUserData({ ...userData, name: text.trim() })
+            }
           ></TextInput>
         </View>
 
@@ -100,7 +103,9 @@ const Signup = ({ navigation }) => {
               borderColor: '#B0BEC5',
               color: 'black',
             }}
-            onChangeText={text => setUserData({ ...userData, email: text })}
+            onChangeText={text =>
+              setUserData({ ...userData, email: text.trim() })
+            }
           ></TextInput>
         </View>
 
@@ -120,7 +125,9 @@ const Signup = ({ navigation }) => {
               borderColor: '#B0BEC5',
               color: 'black',
             }}
-            onChangeText={text => setUserData({ ...userData, password: text })}
+            onChangeText={text =>
+              setUserData({ ...userData, password: text.trim() })
+            }
           ></TextInput>
         </View>
 
@@ -141,7 +148,7 @@ const Signup = ({ navigation }) => {
               color: 'black',
             }}
             onChangeText={text =>
-              setUserData({ ...userData, confirmPassword: text })
+              setUserData({ ...userData, confirmPassword: text.trim() })
             }
           ></TextInput>
         </View>
@@ -155,7 +162,7 @@ const Signup = ({ navigation }) => {
           onPress={() => signup()}
         >
           <Text style={{ textAlign: 'center', padding: 16, color: 'white' }}>
-            {loading ? 'Signing up' : 'Sign Up'}
+            {loading ? 'Signing up...' : 'Sign Up'}
           </Text>
         </TouchableOpacity>
         <View>

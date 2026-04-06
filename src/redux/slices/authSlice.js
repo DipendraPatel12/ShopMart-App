@@ -15,24 +15,14 @@ export const loginUser = createAsyncThunk(
                 },
                 body: JSON.stringify(userData)
             });
-
             const data = await response.json();
-
             console.log("data", data)
-
             if (!response.ok) {
-
                 return rejectWithValue(data?.message || "Login failed");
             }
-
-
-
             await AsyncStorage.setItem("token", data?.access_token);
-
-
             return data;
         } catch (error) {
-
             console.log("error while login user : ",error)
             return rejectWithValue(error.message);
         }
@@ -46,7 +36,6 @@ export const RegisterUser = createAsyncThunk("auth/RegisterUser", async (userDat
 
         const data = await response.json()
         console.log("REgister USer rES", data)
-
         if (!response.ok) {
             return rejectWithValue(data?.message || "Registration failed");
         }
