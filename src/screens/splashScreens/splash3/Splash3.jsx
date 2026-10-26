@@ -1,7 +1,29 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { finishOnboarding } from '../../../redux/slices/authSlice';
 
 const Splash3 = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  const handleGetStarted = async () => {
+    try {
+      await dispatch(finishOnboarding()).unwrap();
+      navigation.navigate('Login');
+    } catch (error) {
+      console.log('Failed to save onboarding status:', error);
+    }
+  };
+
+  const handleNext = async () => {
+    try {
+      await dispatch(finishOnboarding()).unwrap();
+      navigation.navigate('Signup');
+    } catch (error) {
+      console.log('Failed to save onboarding status:', error);
+    }
+  };
+
   return (
     <View
       style={{
@@ -69,14 +91,14 @@ const Splash3 = ({ navigation }) => {
             alignItems: 'center',
             borderRadius: 10,
           }}
-          onPress={() => navigation.navigate('Signup')}
+          onPress={handleNext}
         >
           <Text style={{ fontWeight: 500, fontSize: 20, color: 'white' }}>
             Next
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+        <TouchableOpacity onPress={handleGetStarted}>
           <Text style={{ color: '#42A5F5', fontSize: 20, textAlign: 'center' }}>
             skip
           </Text>

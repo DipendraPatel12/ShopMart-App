@@ -1,7 +1,10 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
+import useSkipOnboarding from '../../../hooks/useSkipOnboarding';
 
 const Splash2 = ({ navigation }) => {
+  const handleSkip = useSkipOnboarding(navigation);
+
   return (
     <View
       style={{
@@ -76,7 +79,7 @@ const Splash2 = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+        <TouchableOpacity onPress={handleSkip}>
           <Text style={{ color: '#42A5F5', fontSize: 20, textAlign: 'center' }}>
             skip
           </Text>

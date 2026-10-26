@@ -23,7 +23,7 @@ export const loginUser = createAsyncThunk(
             await AsyncStorage.setItem("token", data?.access_token);
             return data;
         } catch (error) {
-            console.log("error while login user : ",error)
+            console.log("error while login user : ", error)
             return rejectWithValue(error.message);
         }
     }
@@ -67,27 +67,57 @@ export const getUserProfile = createAsyncThunk("auth/getUserProfile", async (use
 })
 
 
-const removeTokenFromAsync = async () => {
-    await AsyncStorage.removeItem('token')
 
-}
+export const checkFirstLaunch = createAsyncThunk(
+    'auth/checkFirstLaunch',
+    async () => {
+        const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+
+        if (hasLaunched === 'true') {
+            return false;
+        }
+
+        await AsyncStorage.setItem('hasLaunched', 'true');
+        return true;
+    },
+);
+
+export const loadToken = createAsyncThunk(
+    'auth/loadToken',
+    async () => {
+        return await AsyncStorage.getItem('token');
+    }
+);
+
+export const logoutUser = createAsyncThunk(
+    'auth/logoutUser',
+    async () => {
+        await AsyncStorage.removeItem('token');
+    }
+);
+
+export const finishOnboarding = createAsyncThunk(
+    'auth/finishOnboarding',
+    async () => {
+        await AsyncStorage.setItem('hasLaunched', 'true');
+        return false;
+    },
+);
+
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {
-        user: {},
+        user: null,
         token: null,
         loading: false,
         error: null,
-        success: false
+        success: false,
+        authChecked: false,
+        isFirstLaunch: false,
     },
     reducers: {
 
-        logout: (state) => {
-            state.user = null;
-            state.token = null;
-            removeTokenFromAsync()
-
-        }
     },
 
     extraReducers: (builder) => {
@@ -118,8 +148,9 @@ const authSlice = createSlice({
                 state.loading = false
                 state.error = action.payload;
                 state.success = false
-
-
+            })
+            .addCase(checkFirstLaunch.fulfilled, (state, action) => {
+                state.isFirstLaunch = action.payload;
             }).addCase(getUserProfile.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -131,9 +162,26 @@ const authSlice = createSlice({
             }).addCase(getUserProfile.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload;
+            }).addCase(loadToken.pending, state => {
+                state.authChecked = false;
+            })
+            .addCase(loadToken.fulfilled, (state, action) => {
+                state.token = action.payload;
+                state.authChecked = true;
+            })
+            .addCase(loadToken.rejected, state => {
+                state.token = null;
+                state.authChecked = true;
+            })
+            .addCase(logoutUser.fulfilled, state => {
+                state.user = null;
+                state.token = null;
+                state.error = null;
+                state.success = false;
+            }).addCase(finishOnboarding.fulfilled, state => {
+                state.isFirstLaunch = false;
             })
     }
 })
 
-export const { logout } = authSlice.actions;
 export default authSlice.reducer;

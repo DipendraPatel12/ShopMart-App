@@ -1,17 +1,20 @@
-import { TouchableOpacity, Text, View, Image, TextInput } from 'react-native';
 import React, { useState } from 'react';
+import { TouchableOpacity, View, TextInput } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useDispatch } from 'react-redux';
+
 import Home from '../screens/Home/Home';
 import Cart from '../screens/Cart/Cart';
 import Profile from '../screens/Profile/Profile';
 import Favorite from '../screens/Favorite/Favorite';
+
 import ProfileView from '../components/ProfileView';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch } from 'react-redux';
-import { clearCart } from '../redux/slices/cartSlice';
 import Back from '../components/Back';
+import { clearCart } from '../redux/slices/cartSlice';
 
 const Tab = createBottomTabNavigator();
+
 const TabNavigator = () => {
   const [searchBar, setSearchBar] = useState(false);
   const dispatch = useDispatch();
@@ -19,18 +22,22 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarStyle: { height: 75, borderTopWidth: 0 },
-        tabBarItemStyle: { marginVertical: 10 },
+        tabBarStyle: {
+          height: 75,
+          borderTopWidth: 0,
+        },
+        tabBarItemStyle: {
+          marginVertical: 10,
+        },
       }}
     >
-      {/* Home Screen */}
       <Tab.Screen
         name="Home"
         component={Home}
         options={({ navigation }) => ({
           headerTitle: '',
           headerShadowVisible: false,
-          headerLeft: () => <ProfileView></ProfileView>,
+          headerLeft: () => <ProfileView />,
           headerRight: () => (
             <View
               style={{
@@ -41,7 +48,7 @@ const TabNavigator = () => {
                 alignItems: 'center',
               }}
             >
-              {searchBar && (
+              {searchBar ? (
                 <View
                   style={{
                     flexDirection: 'row',
@@ -51,35 +58,41 @@ const TabNavigator = () => {
                     borderWidth: 0.5,
                     backgroundColor: '#ECEFF1',
                     borderRadius: 20,
-                    marginRight: 50,
+                    marginRight: 10,
                   }}
                 >
                   <TextInput
-                    placeholderTextColor={'grey'}
-                    placeholder="search here..."
-                    style={{ width: 250, paddingLeft: 10, color: 'black' }}
-                  ></TextInput>
+                    placeholder="Search here..."
+                    placeholderTextColor="grey"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={{
+                      flex: 1,
+                      paddingLeft: 10,
+                      color: 'black',
+                    }}
+                  />
+
                   <TouchableOpacity
                     style={{ marginRight: 10 }}
-                    onPress={() => setSearchBar(!searchBar)}
+                    onPress={() => setSearchBar(false)}
                   >
                     <FontAwesome5 name="window-close" size={22} color="grey" />
                   </TouchableOpacity>
                 </View>
-              )}
-              {!searchBar && (
-                <TouchableOpacity onPress={() => setSearchBar(!searchBar)}>
-                  <FontAwesome5 name="search" size={22} color="grey" />
-                </TouchableOpacity>
-              )}
+              ) : (
+                <>
+                  <TouchableOpacity onPress={() => setSearchBar(true)}>
+                    <FontAwesome5 name="search" size={22} color="grey" />
+                  </TouchableOpacity>
 
-              {!searchBar && (
-                <TouchableOpacity
-                  style={{ marginRight: 10 }}
-                  onPress={() => navigation.navigate('Notification')}
-                >
-                  <FontAwesome5 name="bell" size={22} color="grey" />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ marginRight: 10 }}
+                    onPress={() => navigation.navigate('Notification')}
+                  >
+                    <FontAwesome5 name="bell" size={22} color="grey" />
+                  </TouchableOpacity>
+                </>
               )}
             </View>
           ),
@@ -93,14 +106,13 @@ const TabNavigator = () => {
         })}
       />
 
-      {/* cart Screen */}
       <Tab.Screen
         name="Cart"
         component={Cart}
-        options={({ navigation }) => ({
+        options={{
           headerTitleAlign: 'center',
           headerShadowVisible: false,
-          headerLeft: () => <Back></Back>,
+          headerLeft: () => <Back />,
           headerRight: () => (
             <TouchableOpacity
               style={{
@@ -125,17 +137,16 @@ const TabNavigator = () => {
               color={focused ? '#1E88E5' : 'grey'}
             />
           ),
-        })}
-      ></Tab.Screen>
+        }}
+      />
 
-      {/* Favorite Screen */}
       <Tab.Screen
         name="Favorite"
         component={Favorite}
-        options={({ navigation }) => ({
+        options={{
           headerTitleAlign: 'center',
           headerShadowVisible: false,
-          headerLeft: () => <Back></Back>,
+          headerLeft: () => <Back />,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="heart"
@@ -143,17 +154,16 @@ const TabNavigator = () => {
               color={focused ? '#1E88E5' : 'grey'}
             />
           ),
-        })}
-      ></Tab.Screen>
+        }}
+      />
 
-      {/* Profile Screen */}
       <Tab.Screen
         name="Profile"
         component={Profile}
-        options={({ navigation }) => ({
+        options={{
           headerTitleAlign: 'center',
           headerShadowVisible: false,
-          headerLeft: () => <Back></Back>,
+          headerLeft: () => <Back />,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="user"
@@ -161,8 +171,8 @@ const TabNavigator = () => {
               color={focused ? '#1E88E5' : 'grey'}
             />
           ),
-        })}
-      ></Tab.Screen>
+        }}
+      />
     </Tab.Navigator>
   );
 };

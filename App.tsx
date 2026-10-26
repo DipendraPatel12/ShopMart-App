@@ -1,29 +1,23 @@
-import { StatusBar, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { configureReanimatedLogger } from 'react-native-reanimated';
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
 
-// Disable strict mode to suppress the warning
-configureReanimatedLogger({ strict: false });
-
-import { NavigationContainer } from '@react-navigation/native'
-import StackNavigator from './src/navigations/StackNavigator'
-import { Provider } from 'react-redux'
-import store from './src/redux/store'
-
+import store from './src/redux/store';
+import RootNavigator from '././src/navigations/RootNavigator';
 
 const App = () => {
   return (
-    <>
-      <Provider store={store}>
-        <StatusBar backgroundColor='white'></StatusBar>
-        <NavigationContainer>
-          <StackNavigator></StackNavigator>
-        </NavigationContainer>
-      </Provider>
-    </>
-  )
-}
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="#FFFFFF"
+        />
+        <RootNavigator />
+      </SafeAreaProvider>
+    </Provider>
+  );
+};
 
-export default App
-
-const styles = StyleSheet.create({})
+export default App;

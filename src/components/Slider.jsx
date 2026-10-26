@@ -10,13 +10,11 @@ import { useSharedValue } from 'react-native-reanimated';
 const width = Dimensions.get('window').width;
 const Slider = () => {
   const data = [img1, img2, img3];
-  const ref = useRef(null);
   const progress = useSharedValue(0);
 
   return (
     <View style={{ flex: 1 }}>
       <Carousel
-        ref={ref}
         width={width}
         height={width / 2}
         data={data}

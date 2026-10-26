@@ -1,22 +1,39 @@
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+
+import React, { useEffect } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
+import { Controller, useForm } from 'react-hook-form';
 import { loginUser } from '../../redux/slices/authSlice';
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('dipendra@gmail.com');
-  const [password, setPassword] = useState('12345678');
 
   const { loading, error, token } = useSelector(state => state.auth);
+
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      email: 'dipendrapatel926@gmail.com',
+      password: '12345678',
+    },
+  });
 
   useEffect(() => {
     if (token) {
@@ -25,94 +42,172 @@ const Login = ({ navigation }) => {
         routes: [{ name: 'MainTabs' }],
       });
     }
-  }, [token]);
+  }, [token, navigation]);
 
-  const login = async () => {
-    if (!email || !password) {
-      Alert.alert('Please Fill All the Fields');
-      return;
+  const login = async formData => {
+    try {
+      await dispatch(
+        loginUser({
+          email: formData.email.trim(),
+          password: formData.password,
+        }),
+      ).unwrap();
+    } catch (err) {
+      console.error(err);
     }
-    dispatch(
-      loginUser({
-        email: email.trim(),
-        password: password.trim(),
-      }),
-    );
+  };
+
+  const inputStyle = hasError => ({
+    ...styles.textInputStyle,
+    borderColor: hasError ? 'red' : '#B0BEC5',
+  });
+
+  const renderError = message => {
+    if (!message) return null;
+
+    return <Text style={styles.validationError}>{message}</Text>;
   };
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={{ padding: 30 }}>
-        <View style={styles.fieldContainer}>
-          <Text style={{ fontWeight: 400 }}>Email</Text>
-          <TextInput
-            placeholder="Enter Name"
-            placeholderTextColor="grey"
-            value={email}
-            style={styles.textInputStyle}
-            onChangeText={text => setEmail(text)}
-          ></TextInput>
-        </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: 'white' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'space-between',
+        }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={{ padding: 30 }}>
+          {/* EMAIL */}
+          <View style={styles.fieldContainer}>
+            <Text>Email</Text>
 
-        <View style={styles.fieldContainer}>
-          <Text style={{ fontWeight: 400 }}>Password</Text>
-          <TextInput
-            placeholder="Enter Password"
-            placeholderTextColor="grey"
-            value={password}
-            style={styles.textInputStyle}
-            onChangeText={text => setPassword(text)}
-          ></TextInput>
-        </View>
+            <Controller
+              control={control}
+              name="email"
+              rules={{
+                required: 'Email is required',
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: 'Enter a valid email address',
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholder="Enter Email"
+                  placeholderTextColor="grey"
+                  value={value}
+                  onChangeText={text => {
+                    onChange(text);
+                    clearErrors('server');
+                  }}
+                  onBlur={onBlur}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={inputStyle(errors.email)}
+                />
+              )}
+            />
 
-        <TouchableOpacity style={{ marginBottom: 20 }}>
-          <Text style={styles.forgetBtnText}>Forgot Password?</Text>
-        </TouchableOpacity>
+            {renderError(errors.email?.message)}
+          </View>
 
-        <TouchableOpacity
-          style={styles.loginBtnContainer}
-          onPress={() => login()}
-        >
-          <Text style={styles.loginBtnText}>
-            {loading ? 'Logging in...' : 'Login'}
-          </Text>
-        </TouchableOpacity>
+          <View style={styles.fieldContainer}>
+            <Text>Password</Text>
 
-        <View>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      </View>
+            <Controller
+              control={control}
+              name="password"
+              rules={{
+                required: 'Password is required',
+                minLength: {
+                  value: 8,
+                  message: 'Password must be at least 8 characters',
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholder="Enter Password"
+                  placeholderTextColor="grey"
+                  value={value}
+                  onChangeText={text => {
+                    onChange(text);
+                    clearErrors('server');
+                  }}
+                  onBlur={onBlur}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  style={inputStyle(errors.password)}
+                />
+              )}
+            />
 
-      <View style={styles.bottomNavIconContainer}>
-        <Text>Or Login With</Text>
-        <View style={styles.iconContainer}>
-          <TouchableOpacity>
-            <FontAwesome5 name="facebook" size={35} color="#1877F2" />
+            {renderError(errors.password?.message)}
+          </View>
+
+          <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => {}}>
+            <Text style={styles.forgetBtnText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
-            <FontAwesome5 name="google" size={30} color="black" />
+          <TouchableOpacity
+            disabled={loading || isSubmitting}
+            style={[
+              styles.loginBtnContainer,
+              {
+                opacity: loading || isSubmitting ? 0.6 : 1,
+              },
+            ]}
+            onPress={handleSubmit(login)}
+          >
+            <Text style={styles.loginBtnText}>
+              {loading || isSubmitting ? 'Logging in...' : 'Login'}
+            </Text>
           </TouchableOpacity>
+
+          {!!error && (
+            <Text style={styles.errorText}>
+              {typeof error === 'string'
+                ? error
+                : 'Login failed. Please check your details and try again.'}
+            </Text>
+          )}
+
+          {renderError(errors.server?.message)}
         </View>
-        <View style={{ flexDirection: 'row' }}>
-          <Text>Don't have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-            <Text style={{ color: '#42A5F5' }}> Sign up</Text>
-          </TouchableOpacity>
+
+        <View style={styles.bottomNavIconContainer}>
+          <Text>Or Login With</Text>
+
+          <View style={styles.iconContainer}>
+            <TouchableOpacity>
+              <FontAwesome5 name="facebook" size={35} color="#1877F2" />
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <FontAwesome5 name="google" size={30} color="black" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: 'row' }}>
+            <Text>Don't have an account?</Text>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+              <Text style={{ color: '#42A5F5' }}> Sign up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default Login;
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-  },
   fieldContainer: {
     justifyContent: 'flex-start',
     gap: 10,
@@ -132,7 +227,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   loginBtnContainer: {
-    width: 330,
+    width: '100%',
     backgroundColor: '#42A5F5',
     borderRadius: 20,
   },
@@ -140,13 +235,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 16,
     color: 'white',
-    fontWeight: 500,
+    fontWeight: '500',
   },
   errorText: {
     textAlign: 'center',
     marginTop: 20,
     color: 'red',
     fontWeight: '500',
+  },
+  validationError: {
+    color: 'red',
+    marginTop: 4,
   },
   bottomNavIconContainer: {
     justifyContent: 'center',
