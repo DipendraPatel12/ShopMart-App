@@ -1,7 +1,6 @@
 import {
   Dimensions,
   FlatList,
-  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -9,118 +8,102 @@ import {
 } from 'react-native';
 import React from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  decreaseQuantity,
-  increaseQuantity,
-} from '../../redux/slices/cartSlice';
+import useCart from '../../hooks/useCart';
+import { AppImage } from '../../lib';
 
 const Cart = ({ navigation }) => {
-  const { cart, totalItems, totalPrice } = useSelector(state => state.cart);
-  console.warn('CART DATA', cart);
-  const dispatch = useDispatch();
-
+  const { cart, totalItems, totalPrice, increaseQty, decreaseQty } = useCart();
   const { width } = Dimensions.get('window');
 
-  if (cart.length === 0)
+  if (cart.length === 0) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}
-      >
-        <Text style={{ alignSelf: 'center' }}> Cart Empty !</Text>
+      <View style={styles.emptyContainer}>
+        <FontAwesome5 name="shopping-bag" size={60} color="#CFD8DC" />
+        <Text style={styles.emptyText}>Your Cart is Empty!</Text>
       </View>
     );
+  }
+
+  const shippingCharges = 10;
+  const totalTax = 45;
+  const grandTotal = (totalPrice + shippingCharges + totalTax).toFixed(2);
 
   return (
-    <View style={styles.main_container}>
-      <View style={{ height: 350 }}>
+    <View style={styles.mainContainer}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={cart}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item?.id?.toString() || Math.random().toString()}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View style={{ marginBottom: 20, marginLeft: 2 }}>
-              <View style={styles.card_container}>
-                <View style={styles.card_image_container}>
-                  <Image
-                    source={{ uri: item?.image }}
+            <View style={styles.cardWrapper}>
+              <View style={styles.cardContainer}>
+                <View style={styles.cardImageContainer}>
+                  <AppImage
+                    source={item?.image}
                     style={{ width: 70, height: 70, borderRadius: 10 }}
                     resizeMode="contain"
-                  ></Image>
+                  />
                 </View>
 
-                <View style={styles.card_detail_container}>
-                  <View style={{ justifyContent: 'center', gap: 5 }}>
-                    <Text style={{ fontWeight: 2000 }}>
-                      {item?.title.slice(0, 20)}
+                <View style={styles.cardDetailContainer}>
+                  <View style={{ justifyContent: 'center', gap: 4, flex: 1 }}>
+                    <Text
+                      style={{ fontWeight: '600', fontSize: 14 }}
+                      numberOfLines={1}
+                    >
+                      {item?.title}
                     </Text>
-                    <Text style={{ color: 'grey', fontWeight: 500 }}>
+                    <Text style={{ color: 'grey', fontWeight: '500' }}>
                       Quantity: {item?.quantity}
                     </Text>
-                    <Text style={{ fontWeight: 800 }}>
-                      $ {item?.total.toFixed(2)}
+                    <Text style={{ fontWeight: 'bold', color: '#1E88E5' }}>
+                      ${item?.total?.toFixed(2)}
                     </Text>
                   </View>
 
-                  <View style={{ justifyContent: 'space-between' }}>
+                  <View style={styles.qtyControlContainer}>
                     <TouchableOpacity
                       style={styles.increaseBtn}
-                      onPress={() => dispatch(increaseQuantity(item?.id))}
+                      onPress={() => increaseQty(item?.id)}
                     >
-                      <FontAwesome5 name="plus" size={17} color="white" />
+                      <FontAwesome5 name="plus" size={14} color="white" />
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.decreaseBtn}
-                      onPress={() => dispatch(decreaseQuantity(item?.id))}
+                      onPress={() => decreaseQty(item?.id)}
                     >
-                      <FontAwesome5 name="minus" size={17} color="white" />
+                      <FontAwesome5 name="minus" size={14} color="white" />
                     </TouchableOpacity>
                   </View>
                 </View>
               </View>
             </View>
           )}
-        ></FlatList>
+        />
       </View>
 
-      <View
-        style={{
-          width: width - 40,
-          ...styles.orderDetailContainer,
-        }}
-      >
-        <Text style={{ textAlign: 'center', fontWeight: 500, fontSize: 18 }}>
-          Order Details
-        </Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      {/* Order Summary */}
+      <View style={styles.orderDetailContainer}>
+        <Text style={styles.orderTitle}>Order Details</Text>
+        <View style={styles.orderRow}>
           <View>
             <Text style={styles.orderDetailText}>Total items</Text>
             <Text style={styles.orderDetailText}>Shipping Charges</Text>
             <Text style={styles.orderDetailText}>Total tax</Text>
-            <Text style={{ ...styles.orderDetailText, fontSize: 20 }}>
-              Grand Total
-            </Text>
+            <Text style={styles.grandTotalText}>Grand Total</Text>
           </View>
-          <View>
+          <View style={{ alignItems: 'flex-end' }}>
             <Text style={styles.orderDetailText}>{totalItems || 0}</Text>
-            <Text style={styles.orderDetailText}>10</Text>
-            <Text style={styles.orderDetailText}>45</Text>
-            <Text style={{ ...styles.orderDetailText, fontSize: 20 }}>
-              $ {(totalPrice + 55).toFixed(2)}
-            </Text>
+            <Text style={styles.orderDetailText}>${shippingCharges}</Text>
+            <Text style={styles.orderDetailText}>${totalTax}</Text>
+            <Text style={styles.grandTotalText}>${grandTotal}</Text>
           </View>
         </View>
       </View>
 
       <TouchableOpacity
-        style={{
-          width: width - 50,
-          ...styles.paymentBtn,
-        }}
+        style={[styles.paymentBtn, { width: width - 40 }]}
         activeOpacity={0.7}
         onPress={() => navigation.navigate('Success')}
       >
@@ -133,80 +116,115 @@ const Cart = ({ navigation }) => {
 export default Cart;
 
 const styles = StyleSheet.create({
-  main_container: {
+  mainContainer: {
     flex: 1,
     backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
-  card_container: {
-    width: 350,
-    height: 100,
-    borderRadius: 20,
+  emptyContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 15,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#78909C',
+  },
+  cardWrapper: {
+    marginBottom: 15,
+  },
+  cardContainer: {
+    borderRadius: 16,
     backgroundColor: '#FFFFFF',
     padding: 10,
-
-    elevation: 2,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     flexDirection: 'row',
-    gap: 10,
+    gap: 12,
   },
-  card_image_container: {
-    width: 100,
+  cardImageContainer: {
+    width: 80,
     height: 80,
     justifyContent: 'center',
     backgroundColor: '#ECEFF1',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 12,
   },
-  card_detail_container: {
-    width: 200,
+  cardDetailContainer: {
+    flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
+  qtyControlContainer: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
   increaseBtn: {
-    width: 30,
-    height: 30,
+    width: 28,
+    height: 28,
     backgroundColor: '#64B5F6',
-    borderRadius: 10,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   decreaseBtn: {
-    width: 30,
-    height: 30,
+    width: 28,
+    height: 28,
     backgroundColor: '#CFD8DC',
-    borderRadius: 10,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   orderDetailContainer: {
-    backgroundColor: 'white',
-
-    height: 180,
-    borderWidth: 2,
-    borderRadius: 20,
+    borderWidth: 1.5,
+    borderRadius: 16,
     borderStyle: 'dashed',
     borderColor: '#42A5F5',
     backgroundColor: '#E3F2FD',
-    padding: 20,
-    gap: 30,
+    padding: 16,
+    marginVertical: 15,
+    gap: 10,
+  },
+  orderTitle: {
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: 16,
+    color: '#1E88E5',
+  },
+  orderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   orderDetailText: {
-    color: '#90A4AE',
-    fontWeight: 800,
+    color: '#78909C',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  grandTotalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#263238',
+    marginTop: 4,
   },
   paymentBtn: {
     backgroundColor: '#2196F3',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 30,
+    borderRadius: 28,
+    alignSelf: 'center',
+    paddingVertical: 16,
+    marginBottom: 10,
   },
   paymentBtnText: {
     color: 'white',
-    fontWeight: 800,
-    padding: 20,
+    fontWeight: 'bold',
     fontSize: 16,
   },
 });

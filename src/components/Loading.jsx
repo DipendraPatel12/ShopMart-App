@@ -1,17 +1,12 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
+import React from 'react';
+import { colors } from '../constants';
+import styles from './Loading.styles';
 
 const Loading = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignContent: 'center',
-      }}
-    >
-      {/* <Text style={{ alignSelf: 'center' }}> Loading...</Text> */}
-      <ActivityIndicator size="large"></ActivityIndicator>
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color={colors.primary} />
     </View>
   );
 };

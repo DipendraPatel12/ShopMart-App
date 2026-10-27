@@ -1,44 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { loadToken, checkFirstLaunch } from '../redux/slices/authSlice';
-
+import useAuth from '../hooks/useAuth';
 import StackNavigator from './StackNavigator';
+import Loading from '../components/Loading';
 
 const RootNavigator = () => {
-  const dispatch = useDispatch();
-
-  const authChecked = useSelector(state => state.auth.authChecked);
-  const isFirstLaunch = useSelector(state => state.auth.isFirstLaunch);
+  const { authChecked, isFirstLaunch, initializeAuth } = useAuth();
   const [launchChecked, setLaunchChecked] = useState(false);
-
 
   useEffect(() => {
     const checkApp = async () => {
-      await dispatch(loadToken());
-      await dispatch(checkFirstLaunch());
-
+      await initializeAuth();
       setLaunchChecked(true);
     };
 
     checkApp();
-  }, [dispatch]);
+  }, [initializeAuth]);
 
   if (!authChecked || !launchChecked) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#FFFFFF',
-        }}
-      >
-        <ActivityIndicator size="large" color="#1E88E5" />
-      </View>
-    );
+    return <Loading />;
   }
 
   return (
@@ -49,3 +29,4 @@ const RootNavigator = () => {
 };
 
 export default RootNavigator;
+

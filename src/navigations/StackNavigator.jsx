@@ -1,6 +1,5 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useSelector } from 'react-redux';
 
 import Splash1 from '../screens/splashScreens/splash1/Splash1';
 import Splash2 from '../screens/splashScreens/splash2/Splash2';
@@ -13,15 +12,19 @@ import ProductDetail from '../screens/ProductDetail/ProductDetail';
 import Notification from '../screens/Notification/Notification';
 import CategoryProduct from '../screens/CategoryProducts/CategoryProducts';
 import Success from '../screens/Success/Success';
-import Back from '../components/Back';
+
+import useAuth from '../hooks/useAuth';
+import { defaultStackScreenOptions } from './navigation.config';
 
 const Stack = createNativeStackNavigator();
 
+const renderNoHeaderLeft = () => null;
+
 const StackNavigator = ({ isFirstLaunch }) => {
-  const token = useSelector(state => state.auth.token);
+  const { token } = useAuth();
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={defaultStackScreenOptions}>
       {token ? (
         <>
           <Stack.Screen
@@ -33,23 +36,13 @@ const StackNavigator = ({ isFirstLaunch }) => {
           <Stack.Screen
             name="ProductDetail"
             component={ProductDetail}
-            options={{
-              headerTitle: 'Product Details',
-              headerTitleAlign: 'center',
-              headerShadowVisible: false,
-              headerLeft: () => <Back />,
-            }}
+            options={{ headerTitle: 'Product Details' }}
           />
 
           <Stack.Screen
             name="Notification"
             component={Notification}
-            options={{
-              headerTitle: 'Notification',
-              headerTitleAlign: 'center',
-              headerShadowVisible: false,
-              headerLeft: () => <Back />,
-            }}
+            options={{ headerTitle: 'Notification' }}
           />
 
           <Stack.Screen
@@ -57,9 +50,6 @@ const StackNavigator = ({ isFirstLaunch }) => {
             component={CategoryProduct}
             options={({ route }) => ({
               headerTitle: route.params?.categoryName || 'Products',
-              headerTitleAlign: 'center',
-              headerShadowVisible: false,
-              headerLeft: () => <Back />,
             })}
           />
 
@@ -94,19 +84,14 @@ const StackNavigator = ({ isFirstLaunch }) => {
           <Stack.Screen
             name="Login"
             component={Login}
-            options={{
-              headerTitle: 'Login',
-              headerTitleAlign: 'center',
-              headerShadowVisible: false,
-              headerLeft: () => <Back />,
-            }}
+            options={{ headerTitle: 'Login' }}
           />
           <Stack.Screen
             name="Signup"
             component={Signup}
             options={{
-              headerTitleAlign: 'center',
-              headerShadowVisible: false,
+              headerTitle: 'Sign Up',
+              headerLeft: renderNoHeaderLeft,
               headerBackVisible: false,
             }}
           />
@@ -117,3 +102,4 @@ const StackNavigator = ({ isFirstLaunch }) => {
 };
 
 export default StackNavigator;
+

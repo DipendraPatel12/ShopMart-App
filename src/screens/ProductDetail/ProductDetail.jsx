@@ -1,275 +1,189 @@
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Dimensions,
-  FlatList,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
-import { productLiked, singleProduct } from '../../redux/slices/productSlice';
 import Loading from '../../components/Loading';
-import { resetSuccess, addFavorite } from '../../redux/slices/favoriteProduct';
-import { addProduct, cartSuccessReset } from '../../redux/slices/cartSlice';
+import useProducts from '../../hooks/useProducts';
+import useCart from '../../hooks/useCart';
+import useFavorites from '../../hooks/useFavorites';
+import { AppImage } from '../../lib';
 
 const ProductDetail = ({ navigation, route }) => {
   const [showMore, setShowMore] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const dispatch = useDispatch();
+  const { width } = Dimensions.get('window');
+  const { currentProduct, loading, selectProduct } = useProducts();
+  const { addToCart, cartSuccess } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
 
-  const { width } = Dimensions.get('screen');
-
-  // console.warn('product', route.params);
-  // console.warn('w', width);
-  const { product, loading } = useSelector(state => state.product);
-  const { success } = useSelector(state => state.favorite);
-  const { cart_success } = useSelector(state => state.cart);
-  console.warn(route?.params?.product?.id);
+  const productId = route?.params?.productId || route?.params?.product?.id;
 
   useEffect(() => {
-    const id = route?.params?.product?.id;
-
-    if (id) {
-      dispatch(singleProduct(id));
+    if (productId) {
+      selectProduct(productId);
     }
-  }, [route?.params]);
-
-  const addToFavorite = () => {
-    dispatch(productLiked(product?.id));
-    dispatch(
-      addFavorite({
-        id: product?.id,
-        title: product?.title,
-        image: product?.image,
-        rating: 5.2,
-        price: product?.price,
-        liked: true,
-      }),
-    );
-    dispatch(singleProduct(product?.id));
-
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
-  };
-
-  const handleAddToCart = item => {
-    const data = {
-      id: item?.id,
-      title: item?.title,
-      image: item?.image,
-      price: item?.price,
-      quantity,
-    };
-    dispatch(addProduct(data));
-
-    setTimeout(() => {
-      dispatch(cartSuccessReset());
-    }, 500);
-  };
+  }, [productId, selectProduct]);
 
   const decreaseProductQuantity = () => {
-    if (quantity == 1) {
-      return;
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
     }
-    setQuantity(prev => prev - 1);
   };
 
   const increaseProductQuantity = () => {
     setQuantity(prev => prev + 1);
   };
-  if (loading) return <Loading></Loading>;
+
+  if (loading || !currentProduct?.id) return <Loading />;
+
+  const isLiked = isFavorite(currentProduct.id);
 
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
       <View
         style={{
           width: width,
           ...styles.carouselContainer,
         }}
       >
-        <View style={{ justifyContent: 'center' }}>
-          <Image
-            source={{ uri: product.image }}
-            style={{ width: width, height: 250 }}
+        <View style={styles.imageContainer}>
+          <AppImage
+            source={currentProduct.image}
+            style={styles.mainImage}
             resizeMode="contain"
-          ></Image>
+          />
         </View>
 
         <TouchableOpacity
           style={styles.addToFavoriteBtnContainer}
-          onPress={() => addToFavorite(product)}
+          onPress={() => toggleFavorite(currentProduct)}
         >
-          {product?.liked ? (
-            <FontAwesome5 name="heart" size={22} color={'red'} solid />
+          {isLiked ? (
+            <FontAwesome5 name="heart" size={22} color="red" solid />
           ) : (
-            <FontAwesome5 name="heart" size={22} color={'#B0BEC5'} />
+            <FontAwesome5 name="heart" size={22} color="#B0BEC5" />
           )}
         </TouchableOpacity>
       </View>
 
-      <View style={{ gap: 5 }}>
-        <View style={{ padding: 20 }}>
+      <View style={{ gap: 15, paddingVertical: 10 }}>
+        <View style={{ paddingHorizontal: 20 }}>
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
-            <Text style={{ color: 'grey', fontWeight: 500 }}>
-              {product?.title?.slice(0, 30)}..
+            <Text style={{ color: 'grey', fontWeight: '500', flex: 1 }}>
+              {currentProduct?.title}
             </Text>
-            <Text style={{ color: 'grey', fontWeight: 500 }}>Price</Text>
+            <Text style={{ color: 'grey', fontWeight: '500', marginLeft: 10 }}>
+              Price
+            </Text>
           </View>
           <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 5,
+            }}
           >
-            <Text style={{ color: 'grey', fontWeight: 500 }}>⭐3.5</Text>
-            <Text style={{ color: '#42A5F5', fontWeight: 900, fontSize: 18 }}>
-              ${product.price}
+            <Text style={{ color: 'grey', fontWeight: '500' }}>
+              ⭐ {currentProduct?.rating?.rate || '4.5'}
+            </Text>
+            <Text style={{ color: '#42A5F5', fontWeight: 'bold', fontSize: 18 }}>
+              ${currentProduct.price}
             </Text>
           </View>
         </View>
 
+        {/* Color Selection */}
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
-          <Text style={{ fontWeight: 500 }}>Select Color</Text>
-
+          <Text style={{ fontWeight: '500' }}>Select Color</Text>
           <View style={{ flexDirection: 'row', marginRight: 10 }}>
             <View style={styles.selectImageContainer}>
-              <Image
-                source={{ uri: `${product.image}` }}
+              <AppImage
+                source={currentProduct.image}
                 style={{ width: 30, height: 30 }}
-              ></Image>
+                resizeMode="contain"
+              />
             </View>
           </View>
         </View>
 
+        {/* Size Selection */}
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
-          <Text style={{ fontWeight: 500 }}>Select Size</Text>
-
-          <View style={{ flexDirection: 'row', gap: 20 }}>
-            <View style={styles.selectSizeBox}>
-              <Text style={styles.sizeText}>S</Text>
-            </View>
-            <View style={styles.selectSizeBox}>
-              <Text style={styles.sizeText}>M</Text>
-            </View>
-            <View style={styles.selectSizeBox}>
-              <Text style={styles.sizeText}>L</Text>
-            </View>
-            <View style={styles.selectSizeBox}>
-              <Text style={styles.sizeText}>XL</Text>
-            </View>
-            <View style={styles.selectSizeBox}>
-              <Text style={styles.sizeText}>XXL</Text>
-            </View>
+          <Text style={{ fontWeight: '500' }}>Select Size</Text>
+          <View style={{ flexDirection: 'row', gap: 15 }}>
+            {['S', 'M', 'L', 'XL', 'XXL'].map(size => (
+              <View key={size} style={styles.selectSizeBox}>
+                <Text style={styles.sizeText}>{size}</Text>
+              </View>
+            ))}
           </View>
         </View>
 
+        {/* Quantity Selection */}
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
-          <Text style={{ fontWeight: 500 }}>Quantity</Text>
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <Text style={{ fontWeight: '500' }}>Quantity</Text>
+          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
             <TouchableOpacity
               style={styles.decreaseBtn}
-              onPress={() => decreaseProductQuantity()}
+              onPress={decreaseProductQuantity}
             >
-              <FontAwesome5 name="minus" size={17} color="white" />
+              <FontAwesome5 name="minus" size={14} color="white" />
             </TouchableOpacity>
-            <Text
-              style={{
-                width: 35,
-                height: 35,
-                backgroundColor: '#CFD8DC',
-                borderRadius: 10,
-
-                textAlignVertical: 'center',
-                textAlign: 'center',
-              }}
-            >
-              {quantity}
-            </Text>
+            <Text style={styles.qtyText}>{quantity}</Text>
             <TouchableOpacity
               style={styles.increaseBtn}
-              onPress={() => increaseProductQuantity()}
+              onPress={increaseProductQuantity}
             >
-              <FontAwesome5 name="plus" size={17} color="white" />
+              <FontAwesome5 name="plus" size={14} color="white" />
             </TouchableOpacity>
           </View>
         </View>
 
+        {/* Description */}
         <View style={{ paddingHorizontal: 20, gap: 5 }}>
-          <Text style={{ color: 'black', fontWeight: 500 }}>Description</Text>
+          <Text style={{ color: 'black', fontWeight: '500' }}>Description</Text>
           <Text style={styles.descriptionMore}>
             {showMore
-              ? `${product?.description} `
-              : `${product?.description?.slice(0, 90)}....   `}
-
-            {showMore === false ? (
-              <TouchableOpacity
-                style={{ justifyContent: 'center', alignItems: 'center' }}
-                onPress={() => {
-                  setShowMore(!showMore);
-                }}
-              >
-                <Text
-                  style={{
-                    color: 'grey',
-                    fontWeight: 800,
-                    textAlignVertical: 'center',
-                  }}
-                >
-                  show more
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-            {showMore ? (
-              <TouchableOpacity
-                style={{ justifyContent: 'center', alignItems: 'center' }}
-                onPress={() => {
-                  setShowMore(!showMore);
-                }}
-              >
-                <Text style={styles.showLessText}>show less</Text>
-              </TouchableOpacity>
-            ) : null}
+              ? currentProduct?.description
+              : `${currentProduct?.description?.slice(0, 90)}... `}
+            <Text
+              style={styles.showMoreToggle}
+              onPress={() => setShowMore(!showMore)}
+            >
+              {showMore ? ' show less' : ' show more'}
+            </Text>
           </Text>
         </View>
       </View>
 
+      {/* Action Buttons */}
       <View style={styles.actionRowContainer}>
         <TouchableOpacity
-          style={{
-            width: width / 2.5,
-            ...styles.actionBtn,
-          }}
-          onPress={() => handleAddToCart(product)}
+          style={[styles.actionBtn, { width: width / 2.3 }]}
+          onPress={() => addToCart(currentProduct, quantity)}
         >
           <Text style={styles.addToCartText}>Add to Cart</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{
-            width: width / 2.5,
-            backgroundColor: '#42A5F5',
-            ...styles.actionBtn,
-          }}
-          onPress={() => {
-            navigation.navigate('Success');
-          }}
+          style={[
+            styles.actionBtn,
+            { width: width / 2.3, backgroundColor: '#42A5F5' },
+          ]}
+          onPress={() => navigation.navigate('Success')}
         >
           <Text style={styles.buyNowText}>Buy Now</Text>
         </TouchableOpacity>
       </View>
 
-      {/* {success && (
-        <View style={styles.popUpCard}>
-          <Text style={styles.popupText}>Product Added To addFavorite</Text>
-        </View>
-      )} */}
-
-      {cart_success && (
+      {cartSuccess && (
         <View style={styles.popUpCard}>
           <Text style={styles.popupText}>Product Added To Cart</Text>
         </View>
@@ -284,18 +198,30 @@ const styles = StyleSheet.create({
   carouselContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#CFD8DC',
-    height: 280,
+    backgroundColor: '#ECEFF1',
+    height: 300,
     position: 'relative',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+  },
+  imageContainer: {
+    width: '100%',
+    height: 260,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mainImage: {
+    width: '100%',
+    height: '100%',
   },
   addToFavoriteBtnContainer: {
     position: 'absolute',
     top: 20,
     right: 40,
     backgroundColor: '#ECEFF1',
-    padding: 5,
-    borderRadius: 5,
-    elevation: 5,
+    padding: 8,
+    borderRadius: 8,
+    elevation: 4,
   },
   selectImageContainer: {
     width: 40,
@@ -315,7 +241,8 @@ const styles = StyleSheet.create({
   },
   sizeText: {
     color: '#78909C',
-    fontSize: 15,
+    fontSize: 14,
+    fontWeight: '600',
   },
   decreaseBtn: {
     width: 35,
@@ -333,55 +260,60 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  descriptionMore: {
-    color: 'grey',
-    fontWeight: 500,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  showLessText: {
-    textAlignVertical: 'center',
+  qtyText: {
+    width: 35,
+    height: 35,
+    backgroundColor: '#CFD8DC',
+    borderRadius: 10,
     textAlignVertical: 'center',
     textAlign: 'center',
+    fontWeight: '600',
+  },
+  descriptionMore: {
     color: 'grey',
-    fontWeight: 800,
+    fontWeight: '400',
+    lineHeight: 20,
+  },
+  showMoreToggle: {
+    color: '#1E88E5',
+    fontWeight: '700',
   },
   actionRowContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginVertical: 20,
   },
   actionBtn: {
     height: 50,
     borderWidth: 1,
     borderColor: '#42A5F5',
-    borderRadius: 40,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
   addToCartText: {
     color: '#42A5F5',
-    fontWeight: 500,
-    fontSize: 18,
+    fontWeight: '600',
+    fontSize: 16,
   },
   buyNowText: {
     color: 'white',
-    fontWeight: 500,
-    fontSize: 18,
+    fontWeight: '600',
+    fontSize: 16,
   },
   popUpCard: {
     backgroundColor: 'white',
     width: 250,
-    padding: 10,
+    padding: 12,
     position: 'absolute',
     borderRadius: 20,
     elevation: 10,
     bottom: 80,
-    left: 60,
+    alignSelf: 'center',
   },
   popupText: {
     textAlign: 'center',
-    fontWeight: 400,
+    fontWeight: '500',
   },
 });

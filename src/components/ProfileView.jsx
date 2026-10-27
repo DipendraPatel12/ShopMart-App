@@ -1,37 +1,34 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import useAuth from '../hooks/useAuth';
+import { AppImage } from '../lib';
+import styles from './ProfileView.styles';
 
 const ProfileView = () => {
-  const { loading, user } = useSelector(state => state.auth);
-  console.warn('user details', user);
+  const { user, loading } = useAuth();
+
   return (
     <TouchableOpacity
-      style={{ flexDirection: 'row', gap: 10, padding: 10 }}
-      activeOpacity={0.5}
+      style={styles.container}
+      activeOpacity={0.7}
     >
-      <View style={{}}>
-        <Image
+      <View>
+        <AppImage
           source={
-            loading || !user
-              ? require('../assets/images/splash1.png')
-              : { uri: user ? user.avatar : '' }
+            user?.avatar
+              ? user.avatar
+              : require('../assets/images/splash1.png')
           }
-          style={{
-            width: 50,
-            height: 50,
-            backgroundColor: 'grey',
-            borderRadius: 50,
-          }}
+          style={styles.avatar}
         />
       </View>
 
-      <View style={{ justifyContent: 'center' }}>
-        <Text style={{ color: 'grey' }}>
+      <View style={styles.textContainer}>
+        <Text style={styles.greetingText}>
           {loading || !user ? '' : 'Welcome'}
         </Text>
-        <Text style={{ fontWeight: 500, fontSize: 15 }}>
-          {loading || !user ? '' : `${user?.name}`}
+        <Text style={styles.userNameText} numberOfLines={1}>
+          {loading || !user ? 'Guest' : user.name}
         </Text>
       </View>
     </TouchableOpacity>
@@ -39,5 +36,3 @@ const ProfileView = () => {
 };
 
 export default ProfileView;
-
-const styles = StyleSheet.create({});

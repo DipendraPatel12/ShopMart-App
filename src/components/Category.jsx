@@ -1,37 +1,25 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import useProducts from '../hooks/useProducts';
+import styles from './Category.styles';
 
 const Category = () => {
   const navigation = useNavigation();
-  const { categories } = useSelector(state => state.product);
+  const { categories } = useProducts();
   const allCategories = ['All', ...categories];
-  // const categories = [
-  //   'All',
-  //   'shoes',
-  //   'bag',
-  //   'clothes',
-  //   'Acessories',
-  //   'Electoronics',
-  // ];
+
   return (
-    <View style={{ marginBottom: 20 }}>
-      <Text style={styles.categoryText}>Category</Text>
+    <View style={styles.container}>
+      <Text style={styles.categoryTitle}>Category</Text>
 
       <FlatList
         data={allCategories}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={item => item}
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View style={{ marginLeft: 20, marginTop: 10, height: 25 }}>
+          <View style={styles.itemWrapper}>
             <TouchableOpacity
               style={
                 item === 'All' ? styles.highlightAllTextBg : styles.categoryCard
@@ -62,31 +50,3 @@ const Category = () => {
 };
 
 export default Category;
-
-const styles = StyleSheet.create({
-  categoryText: { fontWeight: 500, marginLeft: 20 },
-  categoryCard: {
-    backgroundColor: '#CFD8DC',
-    borderRadius: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    elevation: 2,
-  },
-  categoryTextNames: {
-    color: 'black',
-    fontSize: 10,
-    padding: 5,
-  },
-  highlightAllTextBg: {
-    backgroundColor: 'black',
-    borderRadius: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    elevation: 2,
-  },
-  highlightAllText: {
-    color: 'white',
-    fontSize: 10,
-    padding: 5,
-  },
-});

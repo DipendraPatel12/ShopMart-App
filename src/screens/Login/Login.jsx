@@ -1,5 +1,4 @@
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -9,29 +8,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
 import React, { useEffect } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
-import { loginUser } from '../../redux/slices/authSlice';
+import useAuth from '../../hooks/useAuth';
 
 const Login = ({ navigation }) => {
-  const dispatch = useDispatch();
-
-  const { loading, error, token } = useSelector(state => state.auth);
+  const { login, loading, error, token, clearAuthStatus } = useAuth();
 
   const {
     control,
     handleSubmit,
-    setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      email: 'dipendrapatel926@gmail.com',
-      password: '12345678',
+      email: '',
+      password: '',
     },
   });
 
@@ -44,16 +38,15 @@ const Login = ({ navigation }) => {
     }
   }, [token, navigation]);
 
-  const login = async formData => {
+  const handleLogin = async formData => {
     try {
-      await dispatch(
-        loginUser({
-          email: formData.email.trim(),
-          password: formData.password,
-        }),
-      ).unwrap();
+      clearAuthStatus();
+      await login({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
     } catch (err) {
-      console.error(err);
+      // Error is stored in auth state and displayed below
     }
   };
 
@@ -64,7 +57,6 @@ const Login = ({ navigation }) => {
 
   const renderError = message => {
     if (!message) return null;
-
     return <Text style={styles.validationError}>{message}</Text>;
   };
 
@@ -116,6 +108,7 @@ const Login = ({ navigation }) => {
             {renderError(errors.email?.message)}
           </View>
 
+          {/* PASSWORD */}
           <View style={styles.fieldContainer}>
             <Text>Password</Text>
 
@@ -125,8 +118,8 @@ const Login = ({ navigation }) => {
               rules={{
                 required: 'Password is required',
                 minLength: {
-                  value: 8,
-                  message: 'Password must be at least 8 characters',
+                  value: 6,
+                  message: 'Password must be at least 6 characters',
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -161,7 +154,7 @@ const Login = ({ navigation }) => {
                 opacity: loading || isSubmitting ? 0.6 : 1,
               },
             ]}
-            onPress={handleSubmit(login)}
+            onPress={handleSubmit(handleLogin)}
           >
             <Text style={styles.loginBtnText}>
               {loading || isSubmitting ? 'Logging in...' : 'Login'}

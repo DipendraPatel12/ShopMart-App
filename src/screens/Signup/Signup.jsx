@@ -4,21 +4,18 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
-import { RegisterUser } from '../../redux/slices/authSlice';
+import useAuth from '../../hooks/useAuth';
 
 const Signup = ({ navigation }) => {
-  const dispatch = useDispatch();
-
-  const { success, loading, error } = useSelector(state => state.auth);
+  const { register, success, loading, error, clearAuthStatus } = useAuth();
 
   const {
     control,
@@ -42,27 +39,27 @@ const Signup = ({ navigation }) => {
       Alert.alert('Success', 'Registered Successfully', [
         {
           text: 'OK',
-          onPress: () => navigation.navigate('Login'),
+          onPress: () => {
+            clearAuthStatus();
+            navigation.navigate('Login');
+          },
         },
       ]);
     }
-  }, [success, navigation]);
+  }, [success, navigation, clearAuthStatus]);
 
-  const signup = async formData => {
+  const handleSignup = async formData => {
     try {
-      await dispatch(
-        RegisterUser({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          password: formData.password,
-          avatar: 'https://picsum.photos/800',
-        }),
-      ).unwrap();
-
+      clearAuthStatus();
+      await register({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        avatar: 'https://picsum.photos/800',
+      });
       reset();
     } catch (err) {
-  
-      console.log('Registration failed');
+      // Error handled by hook and displayed below
     }
   };
 
@@ -75,17 +72,10 @@ const Signup = ({ navigation }) => {
     color: 'black',
   });
 
-  const errorText = message => {
+  const renderError = message => {
     if (!message) return null;
-
     return (
-      <Text
-        style={{
-          color: 'red',
-          marginTop: 4,
-          marginBottom: 6,
-        }}
-      >
+      <Text style={styles.errorLabel}>
         {message}
       </Text>
     );
@@ -104,7 +94,7 @@ const Signup = ({ navigation }) => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={{ padding: 30 }}>
-      
+          {/* NAME */}
           <View style={{ gap: 10, marginBottom: 10 }}>
             <Text>Name</Text>
 
@@ -129,7 +119,7 @@ const Signup = ({ navigation }) => {
               )}
             />
 
-            {errorText(errors.name?.message)}
+            {renderError(errors.name?.message)}
           </View>
 
           {/* EMAIL */}
@@ -161,10 +151,10 @@ const Signup = ({ navigation }) => {
               )}
             />
 
-            {errorText(errors.email?.message)}
+            {renderError(errors.email?.message)}
           </View>
 
-      
+          {/* PASSWORD */}
           <View style={{ gap: 10, marginBottom: 10 }}>
             <Text>Password</Text>
 
@@ -174,8 +164,8 @@ const Signup = ({ navigation }) => {
               rules={{
                 required: 'Password is required',
                 minLength: {
-                  value: 8,
-                  message: 'Password must be at least 8 characters',
+                  value: 6,
+                  message: 'Password must be at least 6 characters',
                 },
                 onChange: () => {
                   if (getValues('confirmPassword')) {
@@ -197,10 +187,10 @@ const Signup = ({ navigation }) => {
               )}
             />
 
-            {errorText(errors.password?.message)}
+            {renderError(errors.password?.message)}
           </View>
 
-        
+          {/* CONFIRM PASSWORD */}
           <View style={{ gap: 10, marginBottom: 10 }}>
             <Text>Re-type Password</Text>
 
@@ -226,7 +216,7 @@ const Signup = ({ navigation }) => {
               )}
             />
 
-            {errorText(errors.confirmPassword?.message)}
+            {renderError(errors.confirmPassword?.message)}
           </View>
 
           {/* TERMS AND CONDITIONS */}
@@ -250,20 +240,20 @@ const Signup = ({ navigation }) => {
               borderRadius: 20,
               opacity: loading || isSubmitting ? 0.6 : 1,
             }}
-            onPress={handleSubmit(signup)}
+            onPress={handleSubmit(handleSignup)}
           >
             <Text
               style={{
                 textAlign: 'center',
                 padding: 16,
                 color: 'white',
+                fontWeight: '500',
               }}
             >
               {loading || isSubmitting ? 'Signing up...' : 'Sign Up'}
             </Text>
           </TouchableOpacity>
 
-          {/* REDUX SERVER ERROR */}
           {!!error && (
             <Text
               style={{
@@ -315,3 +305,11 @@ const Signup = ({ navigation }) => {
 };
 
 export default Signup;
+
+const styles = StyleSheet.create({
+  errorLabel: {
+    color: 'red',
+    marginTop: 4,
+    marginBottom: 6,
+  },
+});

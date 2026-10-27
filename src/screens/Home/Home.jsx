@@ -1,47 +1,32 @@
-import { FlatList, StyleSheet, View, Text } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { FlatList, View, Text } from 'react-native';
+import React, { useEffect } from 'react';
 import Slider from '../../components/Slider';
 import Category from '../../components/Category';
 import ProductRender from '../../components/ProductRender';
 import Loading from '../../components/Loading';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  extractCategoriesFromProducts,
-  getProducts,
-} from '../../redux/slices/productSlice';
-import { getUserProfile } from '../../redux/slices/authSlice';
+import useProducts from '../../hooks/useProducts';
+import useAuth from '../../hooks/useAuth';
+import useCart from '../../hooks/useCart';
+import styles from './Home.styles';
 
-const Home = ({ navigation }) => {
-  const dispatch = useDispatch();
-
-  const { loading, products } = useSelector(state => state.product);
-  const { cart_success } = useSelector(state => state.cart);
-  // const productsArray = [
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  //   { title: 'sdf', price: 23, rating: { rate: 2.1 } },
-  // ];
+const Home = () => {
+  const { products, loading, fetchProducts } = useProducts();
+  const { fetchProfile } = useAuth();
+  const { cartSuccess } = useCart();
 
   useEffect(() => {
-    dispatch(getUserProfile());
-    dispatch(getProducts());
-    setTimeout(() => {
-      dispatch(extractCategoriesFromProducts());
-    }, 1500);
-  }, []);
+    fetchProfile();
+    fetchProducts();
+  }, [fetchProfile, fetchProducts]);
 
-  if (loading) return <Loading></Loading>;
+  if (loading && products.length === 0) return <Loading />;
 
   return (
     <View style={styles.container}>
       <FlatList
         data={products}
         numColumns={2}
-        columnWrapperStyle={{ justifyContent: 'space-evenly' }}
+        columnWrapperStyle={styles.columnWrapper}
         keyExtractor={item => item.id.toString()}
         ListHeaderComponent={
           <>
@@ -50,9 +35,13 @@ const Home = ({ navigation }) => {
           </>
         }
         renderItem={({ item }) => <ProductRender item={item} />}
+        initialNumToRender={6}
+        maxToRenderPerBatch={8}
+        windowSize={5}
+        removeClippedSubviews={true}
       />
 
-      {cart_success && (
+      {cartSuccess && (
         <View style={styles.popUpCard}>
           <Text style={styles.popUpText}>Product Added To Cart</Text>
         </View>
@@ -62,25 +51,3 @@ const Home = ({ navigation }) => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    position: 'relative',
-  },
-  popUpCard: {
-    backgroundColor: 'white',
-    width: 250,
-    padding: 10,
-    position: 'absolute',
-    borderRadius: 20,
-    elevation: 10,
-    bottom: 80,
-    left: 60,
-  },
-  popUpText: {
-    textAlign: 'center',
-    fontWeight: 400,
-  },
-});

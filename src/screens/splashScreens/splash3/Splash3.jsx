@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { finishOnboarding } from '../../../redux/slices/authSlice';
+import useAuth from '../../../hooks/useAuth';
+import { AppImage } from '../../../lib';
 
 const Splash3 = ({ navigation }) => {
-  const dispatch = useDispatch();
+  const { completeOnboarding } = useAuth();
 
   const handleGetStarted = async () => {
     try {
-      await dispatch(finishOnboarding()).unwrap();
+      await completeOnboarding();
       navigation.navigate('Login');
     } catch (error) {
       console.log('Failed to save onboarding status:', error);
@@ -17,7 +17,7 @@ const Splash3 = ({ navigation }) => {
 
   const handleNext = async () => {
     try {
-      await dispatch(finishOnboarding()).unwrap();
+      await completeOnboarding();
       navigation.navigate('Signup');
     } catch (error) {
       console.log('Failed to save onboarding status:', error);
@@ -35,10 +35,11 @@ const Splash3 = ({ navigation }) => {
     >
       <View style={{ alignItems: 'center', gap: 40 }}>
         <View>
-          <Image
+          <AppImage
             source={require('../../../assets/images/splash3.png')}
             style={{ width: 300, height: 300 }}
-          ></Image>
+            resizeMode="contain"
+          />
         </View>
         <View
           style={{
@@ -55,7 +56,7 @@ const Splash3 = ({ navigation }) => {
               height: 10,
               borderRadius: 50,
             }}
-          ></View>
+          />
           <View
             style={{
               backgroundColor: '#B0BEC5',
@@ -63,7 +64,7 @@ const Splash3 = ({ navigation }) => {
               height: 10,
               borderRadius: 50,
             }}
-          ></View>
+          />
           <View
             style={{
               backgroundColor: '#42A5F5',
@@ -71,10 +72,10 @@ const Splash3 = ({ navigation }) => {
               height: 10,
               borderRadius: 50,
             }}
-          ></View>
+          />
         </View>
         <View style={{ width: 200 }}>
-          <Text style={{ fontSize: 20, fontWeight: 400, textAlign: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: '400', textAlign: 'center' }}>
             We Provide High Quality Product Just For You
           </Text>
         </View>
@@ -93,7 +94,7 @@ const Splash3 = ({ navigation }) => {
           }}
           onPress={handleNext}
         >
-          <Text style={{ fontWeight: 500, fontSize: 20, color: 'white' }}>
+          <Text style={{ fontWeight: '500', fontSize: 20, color: 'white' }}>
             Next
           </Text>
         </TouchableOpacity>

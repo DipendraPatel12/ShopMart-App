@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import useSkipOnboarding from '../../../hooks/useSkipOnboarding';
+import { AppImage } from '../../../lib';
 
 const Splash2 = ({ navigation }) => {
   const handleSkip = useSkipOnboarding(navigation);
@@ -16,10 +17,11 @@ const Splash2 = ({ navigation }) => {
     >
       <View style={{ alignItems: 'center', gap: 40 }}>
         <View>
-          <Image
+          <AppImage
             source={require('../../../assets/images/deliveryBoy.png')}
             style={{ width: 400, height: 300 }}
-          ></Image>
+            resizeMode="contain"
+          />
         </View>
         <View
           style={{

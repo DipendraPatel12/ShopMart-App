@@ -1,13 +1,15 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
+import { AppImage } from '../../lib';
 
 const Success = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
-      <Image
+      <AppImage
         source={require('../../assets/images/payment.jpg')}
         style={{ width: 300, height: 200 }}
-      ></Image>
+        resizeMode="contain"
+      />
 
       <View style={{ justifyContent: 'center', alignItems: 'center', gap: 5 }}>
         <Text style={{ fontSize: 25 }}>Thank You</Text>
