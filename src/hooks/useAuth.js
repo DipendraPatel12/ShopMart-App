@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import {
   loginUser,
-  RegisterUser,
+  registerUser,
   getUserProfile,
   logoutUser,
   finishOnboarding,
@@ -32,7 +32,7 @@ export const useAuth = () => {
 
   const register = useCallback(
     async userData => {
-      return await dispatch(RegisterUser(userData)).unwrap();
+      return await dispatch(registerUser(userData)).unwrap();
     },
     [dispatch],
   );

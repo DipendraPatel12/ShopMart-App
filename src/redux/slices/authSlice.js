@@ -15,8 +15,8 @@ export const loginUser = createAsyncThunk(
   },
 );
 
-export const RegisterUser = createAsyncThunk(
-  'auth/RegisterUser',
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await authService.register(userData);
@@ -42,28 +42,40 @@ export const getUserProfile = createAsyncThunk(
 export const checkFirstLaunch = createAsyncThunk(
   'auth/checkFirstLaunch',
   async () => {
-    const hasLaunched = await AsyncStorage.getItem('hasLaunched');
-    if (hasLaunched === 'true') {
+    try {
+      const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+      return hasLaunched !== 'true';
+    } catch {
       return false;
     }
-    await AsyncStorage.setItem('hasLaunched', 'true');
-    return true;
   },
 );
 
 export const loadToken = createAsyncThunk('auth/loadToken', async () => {
-  return await AsyncStorage.getItem('token');
+  try {
+    return await AsyncStorage.getItem('token');
+  } catch {
+    return null;
+  }
 });
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
-  await AsyncStorage.removeItem('token');
+  try {
+    await AsyncStorage.removeItem('token');
+  } catch (error) {
+    console.log(error)
+  }
   return null;
 });
 
 export const finishOnboarding = createAsyncThunk(
   'auth/finishOnboarding',
   async () => {
-    await AsyncStorage.setItem('hasLaunched', 'true');
+    try {
+      await AsyncStorage.setItem('hasLaunched', 'true');
+    } catch (error) {
+      console.log(error)
+    }
     return false;
   },
 );
@@ -96,25 +108,27 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload?.access_token;
+        state.success = true;
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.success = false;
       })
 
       // Register
-      .addCase(RegisterUser.pending, state => {
+      .addCase(registerUser.pending, state => {
         state.loading = true;
         state.success = false;
         state.error = null;
       })
-      .addCase(RegisterUser.fulfilled, state => {
+      .addCase(registerUser.fulfilled, state => {
         state.loading = false;
         state.success = true;
         state.error = null;
       })
-      .addCase(RegisterUser.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.success = false;
@@ -137,6 +151,9 @@ const authSlice = createSlice({
       // First Launch
       .addCase(checkFirstLaunch.fulfilled, (state, action) => {
         state.isFirstLaunch = action.payload;
+      })
+      .addCase(checkFirstLaunch.rejected, state => {
+        state.isFirstLaunch = false;
       })
 
       // Load Token

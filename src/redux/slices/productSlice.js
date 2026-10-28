@@ -48,16 +48,6 @@ const productSlice = createSlice({
       }
     },
 
-    extractCategoriesFromProducts: state => {
-      const categorySet = new Set();
-      state.products.forEach(p => {
-        if (p.category) {
-          categorySet.add(p.category);
-        }
-      });
-      state.categories = Array.from(categorySet);
-    },
-
     getCategoryRelatedData: (state, action) => {
       state.categoryProduct = state.products.filter(
         product => product.category === action.payload,
@@ -90,7 +80,6 @@ const productSlice = createSlice({
 export const {
   productLiked,
   singleProduct,
-  extractCategoriesFromProducts,
   getCategoryRelatedData,
 } = productSlice.actions;
 
