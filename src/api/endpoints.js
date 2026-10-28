@@ -4,13 +4,11 @@ export const BASE_URLS = {
 };
 
 export const ENDPOINTS = {
-  // Auth endpoints (api.escuelajs.co)
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/users/',
     PROFILE: '/auth/profile',
   },
-  // Product endpoints (fakestoreapi.com)
   PRODUCTS: {
     ALL: '/products',
     SINGLE: id => `/products/${id}`,

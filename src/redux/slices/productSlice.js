@@ -74,7 +74,6 @@ const productSlice = createSlice({
         state.loading = false;
         state.products = action.payload;
 
-        // Automatically populate unique categories without needing magic timeouts in UI
         const categorySet = new Set();
         action.payload.forEach(p => {
           if (p.category) categorySet.add(p.category);

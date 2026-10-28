@@ -35,10 +35,6 @@ const Home = () => {
           </>
         }
         renderItem={({ item }) => <ProductRender item={item} />}
-        initialNumToRender={6}
-        maxToRenderPerBatch={8}
-        windowSize={5}
-        removeClippedSubviews={true}
       />
 
       {cartSuccess && (

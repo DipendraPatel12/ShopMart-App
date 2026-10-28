@@ -29,4 +29,3 @@ const RootNavigator = () => {
 };
 
 export default RootNavigator;
-
