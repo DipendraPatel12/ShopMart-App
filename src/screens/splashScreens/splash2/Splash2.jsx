@@ -1,90 +1,47 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
-import useSkipOnboarding from '../../../hooks/useSkipOnboarding';
-import { AppImage } from '../../../lib';
+ import useSkipOnboarding from '../../../hooks/useSkipOnboarding';
+ import { AppImage } from '../../../lib';
+import styles from '../Splash.styles';
 
 const Splash2 = ({ navigation }) => {
   const handleSkip = useSkipOnboarding(navigation);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-      }}
-    >
-      <View style={{ alignItems: 'center', gap: 40 }}>
-        <View>
+    <View style={styles.container}>
+      <View style={styles.contentWrapper}>
+        <View style={styles.imageWrapper}>
           <AppImage
             source={require('../../../assets/images/deliveryBoy.png')}
-            style={{ width: 400, height: 300 }}
+            style={styles.splashImage}
             resizeMode="contain"
           />
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 10,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: '#B0BEC5',
-              width: 10,
-              height: 10,
-              borderRadius: 50,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: '#42A5F5',
-              width: 20,
-              height: 10,
-              borderRadius: 50,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: '#B0BEC5',
-              width: 10,
-              height: 10,
-              borderRadius: 50,
-            }}
-          ></View>
+
+        <View style={styles.indicatorContainer}>
+          <View style={styles.dot} />
+          <View style={styles.activeDot} />
+          <View style={styles.dot} />
         </View>
-        <View style={{ width: 150 }}>
-          <Text style={{ fontSize: 20, fontWeight: 400, textAlign: 'center' }}>
+
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>
             We Ensure Fast Delivery Of Your Order
           </Text>
         </View>
       </View>
 
-      <View style={{ gap: 20 }}>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
-          activeOpacity={0.5}
-          style={{
-            backgroundColor: '#42A5F5',
-            width: 200,
-            height: 50,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 10,
-          }}
+          activeOpacity={0.7}
+          style={styles.nextBtn}
           onPress={() => navigation.navigate('Splash3')}
         >
-          <Text style={{ fontWeight: 500, fontSize: 20, color: 'white' }}>
-            Next
-          </Text>
+          <Text style={styles.nextBtnText}>Next</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleSkip}>
-          <Text style={{ color: '#42A5F5', fontSize: 20, textAlign: 'center' }}>
-            skip
-          </Text>
+        <TouchableOpacity style={styles.skipBtn} onPress={handleSkip}>
+          <Text style={styles.skipBtnText}>Skip</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -92,5 +49,3 @@ const Splash2 = ({ navigation }) => {
 };
 
 export default Splash2;
-
-const styles = StyleSheet.create({});

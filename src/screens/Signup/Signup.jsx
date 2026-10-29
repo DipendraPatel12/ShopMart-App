@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -13,6 +12,8 @@ import {
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Controller, useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
+import { colors, moderateScale } from '../../constants';
+import styles from './Signup.styles';
 
 const Signup = ({ navigation }) => {
   const { register, success, loading, error, clearAuthStatus } = useAuth();
@@ -64,39 +65,28 @@ const Signup = ({ navigation }) => {
   };
 
   const inputStyle = hasError => ({
-    borderWidth: 1,
-    borderRadius: 20,
-    height: 50,
-    padding: 10,
-    borderColor: hasError ? 'red' : '#B0BEC5',
-    color: 'black',
+    ...styles.textInputStyle,
+    borderColor: hasError ? colors.error : colors.border,
   });
 
   const renderError = message => {
     if (!message) return null;
-    return (
-      <Text style={styles.errorLabel}>
-        {message}
-      </Text>
-    );
+    return <Text style={styles.errorLabel}>{message}</Text>;
   };
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: 'white' }}
+      style={styles.keyboardContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: 'space-between',
-        }}
+        contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={{ padding: 30 }}>
+        <View style={styles.formContainer}>
           {/* NAME */}
-          <View style={{ gap: 10, marginBottom: 10 }}>
-            <Text>Name</Text>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>Name</Text>
 
             <Controller
               control={control}
@@ -109,7 +99,7 @@ const Signup = ({ navigation }) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   placeholder="Enter Name"
-                  placeholderTextColor="#B0BEC5"
+                  placeholderTextColor={colors.textMuted}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -123,8 +113,8 @@ const Signup = ({ navigation }) => {
           </View>
 
           {/* EMAIL */}
-          <View style={{ gap: 10, marginBottom: 10 }}>
-            <Text>Email</Text>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>Email</Text>
 
             <Controller
               control={control}
@@ -139,7 +129,7 @@ const Signup = ({ navigation }) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   placeholder="Enter Email"
-                  placeholderTextColor="grey"
+                  placeholderTextColor={colors.textMuted}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -155,8 +145,8 @@ const Signup = ({ navigation }) => {
           </View>
 
           {/* PASSWORD */}
-          <View style={{ gap: 10, marginBottom: 10 }}>
-            <Text>Password</Text>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>Password</Text>
 
             <Controller
               control={control}
@@ -176,7 +166,7 @@ const Signup = ({ navigation }) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   placeholder="Enter Password"
-                  placeholderTextColor="grey"
+                  placeholderTextColor={colors.textMuted}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -191,8 +181,8 @@ const Signup = ({ navigation }) => {
           </View>
 
           {/* CONFIRM PASSWORD */}
-          <View style={{ gap: 10, marginBottom: 10 }}>
-            <Text>Re-type Password</Text>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>Re-type Password</Text>
 
             <Controller
               control={control}
@@ -205,7 +195,7 @@ const Signup = ({ navigation }) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   placeholder="Re-type Password"
-                  placeholderTextColor="grey"
+                  placeholderTextColor={colors.textMuted}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -220,49 +210,27 @@ const Signup = ({ navigation }) => {
           </View>
 
           {/* TERMS AND CONDITIONS */}
-          <View
-            style={{
-              marginBottom: 30,
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-            }}
-          >
-            <Text>I agree with the </Text>
-            <Text style={{ color: '#42A5F5' }}>Terms & Conditions</Text>
+          <View style={styles.termsContainer}>
+            <Text style={styles.termsText}>I agree with the </Text>
+            <Text style={styles.termsLink}>Terms & Conditions</Text>
           </View>
 
           {/* SIGNUP BUTTON */}
           <TouchableOpacity
             disabled={loading || isSubmitting}
-            style={{
-              width: '100%',
-              backgroundColor: '#42A5F5',
-              borderRadius: 20,
-              opacity: loading || isSubmitting ? 0.6 : 1,
-            }}
+            style={[
+              styles.signupBtnContainer,
+              (loading || isSubmitting) && styles.buttonDisabled,
+            ]}
             onPress={handleSubmit(handleSignup)}
           >
-            <Text
-              style={{
-                textAlign: 'center',
-                padding: 16,
-                color: 'white',
-                fontWeight: '500',
-              }}
-            >
+            <Text style={styles.signupBtnText}>
               {loading || isSubmitting ? 'Signing up...' : 'Sign Up'}
             </Text>
           </TouchableOpacity>
 
           {!!error && (
-            <Text
-              style={{
-                textAlign: 'center',
-                marginTop: 20,
-                color: 'red',
-                fontWeight: '500',
-              }}
-            >
+            <Text style={styles.errorText}>
               {typeof error === 'string'
                 ? error
                 : 'Registration failed. Please try again.'}
@@ -271,31 +239,24 @@ const Signup = ({ navigation }) => {
         </View>
 
         {/* SOCIAL LOGIN AND LOGIN LINK */}
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 20,
-            marginBottom: 40,
-          }}
-        >
-          <Text>Or Login With</Text>
+        <View style={styles.bottomNavIconContainer}>
+          <Text style={styles.socialText}>Or Login With</Text>
 
-          <View style={{ flexDirection: 'row', gap: 20 }}>
+          <View style={styles.iconContainer}>
             <TouchableOpacity>
-              <FontAwesome5 name="facebook" size={35} color="#1877F2" />
+              <FontAwesome5 name="facebook" size={moderateScale(32)} color="#1877F2" />
             </TouchableOpacity>
 
             <TouchableOpacity>
-              <FontAwesome5 name="google" size={30} color="black" />
+              <FontAwesome5 name="google" size={moderateScale(28)} color={colors.black} />
             </TouchableOpacity>
           </View>
 
-          <View style={{ flexDirection: 'row' }}>
-            <Text>Already have an account?</Text>
+          <View style={styles.loginRow}>
+            <Text style={styles.haveAccountText}>Already have an account?</Text>
 
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={{ color: '#42A5F5' }}> Log in</Text>
+              <Text style={styles.loginLink}> Log in</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -305,11 +266,3 @@ const Signup = ({ navigation }) => {
 };
 
 export default Signup;
-
-const styles = StyleSheet.create({
-  errorLabel: {
-    color: 'red',
-    marginTop: 4,
-    marginBottom: 6,
-  },
-});

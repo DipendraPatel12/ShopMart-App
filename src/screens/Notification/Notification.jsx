@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import React from 'react';
+import styles from './Notification.styles';
 
 const Notification = () => {
   return (
-    <View>
-      <Text>Notification</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Notifications</Text>
+      <Text style={styles.subtitle}>You have no new notifications.</Text>
     </View>
   );
 };
 
 export default Notification;
-
-const styles = StyleSheet.create({});

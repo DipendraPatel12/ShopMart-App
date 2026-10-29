@@ -2,7 +2,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,6 +11,8 @@ import React, { useEffect } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Controller, useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
+import { colors, moderateScale } from '../../constants';
+import styles from './Login.styles';
 
 const Login = ({ navigation }) => {
   const { login, loading, error, token, clearAuthStatus } = useAuth();
@@ -45,14 +46,14 @@ const Login = ({ navigation }) => {
         email: formData.email.trim(),
         password: formData.password,
       });
-    } catch (err) {
-      // Error is stored in auth state and displayed below
+    } catch {
+      // Error is handled in auth state
     }
   };
 
   const inputStyle = hasError => ({
     ...styles.textInputStyle,
-    borderColor: hasError ? 'red' : '#B0BEC5',
+    borderColor: hasError ? colors.error : colors.border,
   });
 
   const renderError = message => {
@@ -62,20 +63,17 @@ const Login = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: 'white' }}
+      style={styles.keyboardContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: 'space-between',
-        }}
+        contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={{ padding: 30 }}>
+        <View style={styles.formContainer}>
           {/* EMAIL */}
           <View style={styles.fieldContainer}>
-            <Text>Email</Text>
+            <Text style={styles.label}>Email</Text>
 
             <Controller
               control={control}
@@ -90,7 +88,7 @@ const Login = ({ navigation }) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   placeholder="Enter Email"
-                  placeholderTextColor="grey"
+                  placeholderTextColor={colors.textMuted}
                   value={value}
                   onChangeText={text => {
                     onChange(text);
@@ -110,7 +108,7 @@ const Login = ({ navigation }) => {
 
           {/* PASSWORD */}
           <View style={styles.fieldContainer}>
-            <Text>Password</Text>
+            <Text style={styles.label}>Password</Text>
 
             <Controller
               control={control}
@@ -125,7 +123,7 @@ const Login = ({ navigation }) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   placeholder="Enter Password"
-                  placeholderTextColor="grey"
+                  placeholderTextColor={colors.textMuted}
                   value={value}
                   onChangeText={text => {
                     onChange(text);
@@ -142,7 +140,7 @@ const Login = ({ navigation }) => {
             {renderError(errors.password?.message)}
           </View>
 
-          <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => {}}>
+          <TouchableOpacity style={styles.forgetBtn} onPress={() => {}}>
             <Text style={styles.forgetBtnText}>Forgot Password?</Text>
           </TouchableOpacity>
 
@@ -150,9 +148,7 @@ const Login = ({ navigation }) => {
             disabled={loading || isSubmitting}
             style={[
               styles.loginBtnContainer,
-              {
-                opacity: loading || isSubmitting ? 0.6 : 1,
-              },
+              (loading || isSubmitting) && styles.buttonDisabled,
             ]}
             onPress={handleSubmit(handleLogin)}
           >
@@ -173,23 +169,23 @@ const Login = ({ navigation }) => {
         </View>
 
         <View style={styles.bottomNavIconContainer}>
-          <Text>Or Login With</Text>
+          <Text style={styles.socialText}>Or Login With</Text>
 
           <View style={styles.iconContainer}>
             <TouchableOpacity>
-              <FontAwesome5 name="facebook" size={35} color="#1877F2" />
+              <FontAwesome5 name="facebook" size={moderateScale(32)} color="#1877F2" />
             </TouchableOpacity>
 
             <TouchableOpacity>
-              <FontAwesome5 name="google" size={30} color="black" />
+              <FontAwesome5 name="google" size={moderateScale(28)} color={colors.black} />
             </TouchableOpacity>
           </View>
 
-          <View style={{ flexDirection: 'row' }}>
-            <Text>Don't have an account?</Text>
+          <View style={styles.signupRow}>
+            <Text style={styles.noAccountText}>Don't have an account?</Text>
 
             <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-              <Text style={{ color: '#42A5F5' }}> Sign up</Text>
+              <Text style={styles.signupLink}> Sign up</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -199,55 +195,3 @@ const Login = ({ navigation }) => {
 };
 
 export default Login;
-
-const styles = StyleSheet.create({
-  fieldContainer: {
-    justifyContent: 'flex-start',
-    gap: 10,
-    marginBottom: 10,
-  },
-  textInputStyle: {
-    borderWidth: 1,
-    borderRadius: 20,
-    height: 50,
-    padding: 10,
-    borderColor: '#B0BEC5',
-    color: 'black',
-  },
-  forgetBtnText: {
-    color: '#42A5F5',
-    textAlign: 'right',
-    marginRight: 5,
-  },
-  loginBtnContainer: {
-    width: '100%',
-    backgroundColor: '#42A5F5',
-    borderRadius: 20,
-  },
-  loginBtnText: {
-    textAlign: 'center',
-    padding: 16,
-    color: 'white',
-    fontWeight: '500',
-  },
-  errorText: {
-    textAlign: 'center',
-    marginTop: 20,
-    color: 'red',
-    fontWeight: '500',
-  },
-  validationError: {
-    color: 'red',
-    marginTop: 4,
-  },
-  bottomNavIconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 20,
-    marginBottom: 40,
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    gap: 20,
-  },
-});

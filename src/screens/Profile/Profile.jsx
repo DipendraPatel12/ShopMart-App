@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Text, TouchableOpacity, View, Alert } from 'react-native';
 import useAuth from '../../hooks/useAuth';
 import { AppImage } from '../../lib';
+import styles from './Profile.styles';
 
 const Profile = () => {
   const { user, logout } = useAuth();
@@ -35,47 +36,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    padding: 20,
-    justifyContent: 'space-between',
-    paddingBottom: 40,
-  },
-  profileHeader: {
-    alignItems: 'center',
-    marginTop: 40,
-    gap: 10,
-  },
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: '#ECEFF1',
-  },
-  userName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#37474F',
-  },
-  userEmail: {
-    fontSize: 14,
-    color: 'grey',
-  },
-  logoutBtn: {
-    backgroundColor: '#2196F3',
-    height: 50,
-    justifyContent: 'center',
-    borderRadius: 40,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  logoutText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
