@@ -46,8 +46,8 @@ const Login = ({ navigation }) => {
         email: formData.email.trim(),
         password: formData.password,
       });
-    } catch {
-      // Error is handled in auth state
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -55,6 +55,7 @@ const Login = ({ navigation }) => {
     ...styles.textInputStyle,
     borderColor: hasError ? colors.error : colors.border,
   });
+  ``;
 
   const renderError = message => {
     if (!message) return null;
@@ -173,11 +174,19 @@ const Login = ({ navigation }) => {
 
           <View style={styles.iconContainer}>
             <TouchableOpacity>
-              <FontAwesome5 name="facebook" size={moderateScale(32)} color="#1877F2" />
+              <FontAwesome5
+                name="facebook"
+                size={moderateScale(32)}
+                color="#1877F2"
+              />
             </TouchableOpacity>
 
             <TouchableOpacity>
-              <FontAwesome5 name="google" size={moderateScale(28)} color={colors.black} />
+              <FontAwesome5
+                name="google"
+                size={moderateScale(28)}
+                color={colors.black}
+              />
             </TouchableOpacity>
           </View>
 

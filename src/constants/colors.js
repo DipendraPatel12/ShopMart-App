@@ -20,6 +20,8 @@ export const colors = {
   black: '#000000',
   heartRed: '#E53935',
   starYellow: '#FFA000',
+  error: '#D32F2F',
+  success: '#388E3C',
 };
 
 export default colors;

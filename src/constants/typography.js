@@ -1,6 +1,7 @@
 import { moderateScale } from './metrics';
 
 export const typography = {
+
   size: {
     tiny: moderateScale(10),
     xs: moderateScale(12),
@@ -12,7 +13,6 @@ export const typography = {
     title: moderateScale(20),
     heading: moderateScale(24),
   },
-
 
   weight: {
     regular: '400',
