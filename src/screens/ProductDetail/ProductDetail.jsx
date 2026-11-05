@@ -5,12 +5,11 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Loading from '../../components/Loading';
 import useProducts from '../../hooks/useProducts';
 import useCart from '../../hooks/useCart';
 import useFavorites from '../../hooks/useFavorites';
-import { AppImage } from '../../lib';
+import { AppImage, AppIcon } from '../../lib';
 import { colors, moderateScale } from '../../constants';
 import styles from './ProductDetail.styles';
 
@@ -60,9 +59,9 @@ const ProductDetail = ({ navigation, route }) => {
           onPress={() => toggleFavorite(currentProduct)}
         >
           {isLiked ? (
-            <FontAwesome5 name="heart" size={moderateScale(20)} color="red" solid />
+            <AppIcon name="heart" size={moderateScale(20)} color="red" solid />
           ) : (
-            <FontAwesome5 name="heart" size={moderateScale(20)} color={colors.border} />
+            <AppIcon name="heart" size={moderateScale(20)} color={colors.border} />
           )}
         </TouchableOpacity>
       </View>
@@ -121,14 +120,14 @@ const ProductDetail = ({ navigation, route }) => {
               style={styles.decreaseBtn}
               onPress={decreaseProductQuantity}
             >
-              <FontAwesome5 name="minus" size={moderateScale(12)} color={colors.white} />
+              <AppIcon name="minus" size={moderateScale(12)} color={colors.white} />
             </TouchableOpacity>
             <Text style={styles.qtyText}>{quantity}</Text>
             <TouchableOpacity
               style={styles.increaseBtn}
               onPress={increaseProductQuantity}
             >
-              <FontAwesome5 name="plus" size={moderateScale(12)} color={colors.white} />
+              <AppIcon name="plus" size={moderateScale(12)} color={colors.white} />
             </TouchableOpacity>
           </View>
         </View>

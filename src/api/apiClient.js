@@ -1,5 +1,5 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '../lib';
 import { BASE_URLS } from './endpoints';
 
 export const authClient = axios.create({
@@ -19,7 +19,7 @@ export const productClient = axios.create({
 
 
 authClient.interceptors.request.use(async config => {
-  const token = await AsyncStorage.getItem('token');
+  const token = await secureStorage.getAuthToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

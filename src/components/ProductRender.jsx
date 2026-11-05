@@ -1,11 +1,10 @@
 import { Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import useCart from '../hooks/useCart';
 import useFavorites from '../hooks/useFavorites';
 import { colors, scale } from '../constants';
-import { AppImage } from '../lib';
+import { AppImage, AppIcon } from '../lib';
 import styles from './ProductRender.styles';
 
 const ProductRender = ({ item }) => {
@@ -33,14 +32,14 @@ const ProductRender = ({ item }) => {
             onPress={() => toggleFavorite(item)}
           >
             {isLiked ? (
-              <FontAwesome5
+              <AppIcon
                 name="heart"
                 size={scale(16)}
                 color={colors.heartRed}
                 solid
               />
             ) : (
-              <FontAwesome5
+              <AppIcon
                 name="heart"
                 size={scale(16)}
                 color={colors.border}
@@ -74,7 +73,7 @@ const ProductRender = ({ item }) => {
             style={styles.addToCartBtn}
             onPress={() => addToCart(item)}
           >
-            <FontAwesome5 name="plus" size={scale(10)} color={colors.white} />
+            <AppIcon name="plus" size={scale(10)} color={colors.white} />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>

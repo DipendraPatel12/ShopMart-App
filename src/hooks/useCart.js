@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   addProduct,
   increaseQuantity,
@@ -10,9 +10,18 @@ import {
 
 export const useCart = () => {
   const dispatch = useDispatch();
+  const timerRef = useRef(null);
   const { cart, totalItems, totalPrice, cart_success } = useSelector(
     state => state.cart,
   );
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const addToCart = useCallback(
     (product, quantity = 1) => {
@@ -25,8 +34,10 @@ export const useCart = () => {
       };
       dispatch(addProduct(payload));
 
-      // Auto-reset popup indicator
-      setTimeout(() => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => {
         dispatch(cartSuccessReset());
       }, 1500);
     },

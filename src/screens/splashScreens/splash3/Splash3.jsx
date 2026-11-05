@@ -11,8 +11,7 @@ const Splash3 = ({ navigation }) => {
     try {
       await completeOnboarding();
       navigation.navigate('Login');
-    } catch (error) {
-      console.log('Failed to save onboarding status:', error);
+    } catch {
     }
   };
 
@@ -20,8 +19,7 @@ const Splash3 = ({ navigation }) => {
     try {
       await completeOnboarding();
       navigation.navigate('Signup');
-    } catch (error) {
-      console.log('Failed to save onboarding status:', error);
+    } catch {
     }
   };
 

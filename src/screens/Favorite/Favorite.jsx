@@ -1,9 +1,9 @@
 import { FlatList, View, Text } from 'react-native';
 import React from 'react';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ProductRender from '../../components/ProductRender';
 import useFavorites from '../../hooks/useFavorites';
 import useCart from '../../hooks/useCart';
+import { AppIcon } from '../../lib';
 import { colors, moderateScale } from '../../constants';
 import styles from './Favorite.styles';
 
@@ -14,7 +14,7 @@ const Favorite = () => {
   if (favoriteProducts.length === 0) {
     return (
       <View style={styles.noFavoriteCard}>
-        <FontAwesome5 name="heart" size={moderateScale(60)} color={colors.border} />
+        <AppIcon name="heart" size={moderateScale(60)} color={colors.border} />
         <Text style={styles.emptyText}>No Favorites Yet!</Text>
       </View>
     );
@@ -26,7 +26,7 @@ const Favorite = () => {
         data={favoriteProducts}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
-        keyExtractor={item => item?.id?.toString() || Math.random().toString()}
+        keyExtractor={item => String(item.id)}
         renderItem={({ item }) => <ProductRender item={item} />}
         initialNumToRender={6}
         maxToRenderPerBatch={8}

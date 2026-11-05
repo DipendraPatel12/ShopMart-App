@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Controller, useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
+import { AppIcon } from '../../lib';
 import { colors, moderateScale } from '../../constants';
 import styles from './Signup.styles';
 
@@ -244,11 +244,11 @@ const Signup = ({ navigation }) => {
 
           <View style={styles.iconContainer}>
             <TouchableOpacity>
-              <FontAwesome5 name="facebook" size={moderateScale(32)} color="#1877F2" />
+              <AppIcon name="facebook" size={moderateScale(32)} color="#1877F2" />
             </TouchableOpacity>
 
             <TouchableOpacity>
-              <FontAwesome5 name="google" size={moderateScale(28)} color={colors.black} />
+              <AppIcon name="google" size={moderateScale(28)} color={colors.black} />
             </TouchableOpacity>
           </View>
 

@@ -8,9 +8,9 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect } from 'react';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Controller, useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
+import { AppIcon } from '../../lib';
 import { colors, moderateScale } from '../../constants';
 import styles from './Login.styles';
 
@@ -174,7 +174,7 @@ const Login = ({ navigation }) => {
 
           <View style={styles.iconContainer}>
             <TouchableOpacity>
-              <FontAwesome5
+              <AppIcon
                 name="facebook"
                 size={moderateScale(32)}
                 color="#1877F2"
@@ -182,7 +182,7 @@ const Login = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity>
-              <FontAwesome5
+              <AppIcon
                 name="google"
                 size={moderateScale(28)}
                 color={colors.black}

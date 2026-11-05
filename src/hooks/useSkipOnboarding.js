@@ -7,8 +7,7 @@ const useSkipOnboarding = navigation => {
     try {
       await completeOnboarding();
       navigation.navigate('Login');
-    } catch (error) {
-      console.log('Failed to save onboarding:', error);
+    } catch {
     }
   };
 

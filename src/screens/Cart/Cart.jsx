@@ -5,9 +5,8 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import useCart from '../../hooks/useCart';
-import { AppImage } from '../../lib';
+import { AppImage, AppIcon } from '../../lib';
 import { colors, moderateScale } from '../../constants';
 import styles from './Cart.styles';
 
@@ -17,7 +16,7 @@ const Cart = ({ navigation }) => {
   if (cart.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <FontAwesome5 name="shopping-bag" size={moderateScale(60)} color={colors.border} />
+        <AppIcon name="shopping-bag" size={moderateScale(60)} color={colors.border} />
         <Text style={styles.emptyText}>Your Cart is Empty!</Text>
       </View>
     );
@@ -32,7 +31,7 @@ const Cart = ({ navigation }) => {
       <View style={styles.listContainer}>
         <FlatList
           data={cart}
-          keyExtractor={item => item?.id?.toString() || Math.random().toString()}
+          keyExtractor={item => String(item.id)}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <View style={styles.cardWrapper}>
@@ -63,13 +62,13 @@ const Cart = ({ navigation }) => {
                       style={styles.increaseBtn}
                       onPress={() => increaseQty(item?.id)}
                     >
-                      <FontAwesome5 name="plus" size={moderateScale(12)} color={colors.white} />
+                      <AppIcon name="plus" size={moderateScale(12)} color={colors.white} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.decreaseBtn}
                       onPress={() => decreaseQty(item?.id)}
                     >
-                      <FontAwesome5 name="minus" size={moderateScale(12)} color={colors.white} />
+                      <AppIcon name="minus" size={moderateScale(12)} color={colors.white} />
                     </TouchableOpacity>
                   </View>
                 </View>

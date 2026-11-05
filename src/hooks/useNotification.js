@@ -15,14 +15,12 @@ export const useNotification = () => {
 
   const sendNotification = useCallback(
     async ({ title, body, data = {} }) => {
-      // 1. Show OS native notification banner
       const notificationId = await AppNotification.display({
         title,
         body,
         data,
       });
 
-      // 2. Save in Redux store for the in-app notification center
       dispatch(
         addNotification({
           id: notificationId || Date.now().toString(),

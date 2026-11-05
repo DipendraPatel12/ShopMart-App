@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
+import { AppIcon } from '../lib';
 import { colors, moderateScale } from '../constants';
 import styles from './HomeHeaderRight.styles';
 
@@ -24,7 +24,7 @@ const HomeHeaderRight = () => {
             style={styles.closeBtn}
             onPress={() => setSearchBar(false)}
           >
-            <FontAwesome5
+            <AppIcon
               name="window-close"
               size={moderateScale(18)}
               color={colors.textGrey}
@@ -37,7 +37,7 @@ const HomeHeaderRight = () => {
             style={styles.actionIconBtn}
             onPress={() => setSearchBar(true)}
           >
-            <FontAwesome5
+            <AppIcon
               name="search"
               size={moderateScale(18)}
               color={colors.textGrey}
@@ -48,7 +48,7 @@ const HomeHeaderRight = () => {
             style={styles.bellBtn}
             onPress={() => navigation.navigate('Notification')}
           >
-            <FontAwesome5
+            <AppIcon
               name="bell"
               size={moderateScale(18)}
               color={colors.textGrey}

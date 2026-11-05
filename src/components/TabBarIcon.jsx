@@ -1,10 +1,10 @@
 import React from 'react';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { AppIcon } from '../lib';
 import { colors, moderateScale } from '../constants';
 
 const TabBarIcon = ({ name, focused, size = 20 }) => {
   return (
-    <FontAwesome5
+    <AppIcon
       name={name}
       size={moderateScale(size)}
       color={focused ? colors.primary : colors.textMuted}

@@ -5,7 +5,7 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { AppIcon } from '../../lib';
 import useNotification from '../../hooks/useNotification';
 import { colors, moderateScale } from '../../constants';
 import styles from './Notification.styles';
@@ -92,7 +92,7 @@ const Notification = ({ navigation }) => {
 
       {items.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <FontAwesome5
+          <AppIcon
             name="bell-slash"
             size={moderateScale(48)}
             color={colors.textMuted}

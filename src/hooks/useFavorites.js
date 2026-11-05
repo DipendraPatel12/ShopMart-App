@@ -1,11 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { addFavorite, resetSuccess } from '../redux/slices/favoriteProduct';
 import { productLiked } from '../redux/slices/productSlice';
 
 export const useFavorites = () => {
   const dispatch = useDispatch();
+  const timerRef = useRef(null);
   const { favoriteProducts, success } = useSelector(state => state.favorite);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const isFavorite = useCallback(
     productId => {
@@ -30,7 +39,10 @@ export const useFavorites = () => {
         }),
       );
 
-      setTimeout(() => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => {
         dispatch(resetSuccess());
       }, 1000);
     },

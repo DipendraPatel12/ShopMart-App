@@ -1,13 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../../api/services/authService';
+import { secureStorage } from '../../lib';
 
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await authService.login(userData);
-      await AsyncStorage.setItem('token', data?.access_token);
+      if (data?.access_token) {
+        await secureStorage.setAuthToken(data.access_token);
+      }
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -53,7 +56,7 @@ export const checkFirstLaunch = createAsyncThunk(
 
 export const loadToken = createAsyncThunk('auth/loadToken', async () => {
   try {
-    return await AsyncStorage.getItem('token');
+    return await secureStorage.getAuthToken();
   } catch {
     return null;
   }
@@ -61,9 +64,8 @@ export const loadToken = createAsyncThunk('auth/loadToken', async () => {
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
   try {
-    await AsyncStorage.removeItem('token');
-  } catch (error) {
-    console.log(error)
+    await secureStorage.removeAuthToken();
+  } catch {
   }
   return null;
 });
@@ -73,8 +75,7 @@ export const finishOnboarding = createAsyncThunk(
   async () => {
     try {
       await AsyncStorage.setItem('hasLaunched', 'true');
-    } catch (error) {
-      console.log(error)
+    } catch {
     }
     return false;
   },

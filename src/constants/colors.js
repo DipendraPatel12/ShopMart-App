@@ -5,6 +5,7 @@ export const colors = {
   primaryBg: '#E3F2FD',
 
   background: '#FFFFFF',
+  surface: '#F5F7FA',
   cardBg: '#ECEFF1',
   chipBg: '#CFD8DC',
 
@@ -20,7 +21,7 @@ export const colors = {
   black: '#000000',
   heartRed: '#E53935',
   starYellow: '#FFA000',
-  error: '#D32F2F',
+  error: '#E53935',
   success: '#388E3C',
 };
 
