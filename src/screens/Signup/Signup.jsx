@@ -59,8 +59,7 @@ const Signup = ({ navigation }) => {
         avatar: 'https://picsum.photos/800',
       });
       reset();
-    } catch (err) {
-      // Error handled by hook and displayed below
+    } catch {
     }
   };
 

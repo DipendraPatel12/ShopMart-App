@@ -1,9 +1,9 @@
-import { FlatList, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import React from 'react';
 import ProductRender from '../../components/ProductRender';
 import useFavorites from '../../hooks/useFavorites';
 import useCart from '../../hooks/useCart';
-import { AppIcon } from '../../lib';
+import { AppIcon, AppList } from '../../lib';
 import { colors, moderateScale } from '../../constants';
 import styles from './Favorite.styles';
 
@@ -22,14 +22,13 @@ const Favorite = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <AppList
         data={favoriteProducts}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         keyExtractor={item => String(item.id)}
+        estimatedItemSize={240}
         renderItem={({ item }) => <ProductRender item={item} />}
-        initialNumToRender={6}
-        maxToRenderPerBatch={8}
       />
 
       {cartSuccess && (

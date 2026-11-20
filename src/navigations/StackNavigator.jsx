@@ -9,7 +9,6 @@ import Login from '../screens/Login/Login';
 
 import TabNavigator from './TabNavigator';
 import ProductDetail from '../screens/ProductDetail/ProductDetail';
-import Notification from '../screens/Notification/Notification';
 import CategoryProduct from '../screens/CategoryProducts/CategoryProducts';
 import Success from '../screens/Success/Success';
 
@@ -37,12 +36,6 @@ const StackNavigator = ({ isFirstLaunch }) => {
             name="ProductDetail"
             component={ProductDetail}
             options={{ headerTitle: 'Product Details' }}
-          />
-
-          <Stack.Screen
-            name="Notification"
-            component={Notification}
-            options={{ headerTitle: 'Notification' }}
           />
 
           <Stack.Screen
@@ -102,4 +95,3 @@ const StackNavigator = ({ isFirstLaunch }) => {
 };
 
 export default StackNavigator;
-

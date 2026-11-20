@@ -3,15 +3,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../../api/services/authService';
 import { secureStorage } from '../../lib';
 
+const CURRENT_USER_KEY = '@current_user';
+
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await authService.login(userData);
-      if (data?.access_token) {
-        await secureStorage.setAuthToken(data.access_token);
+      const token = data?.access_token || data?.token;
+      if (token) {
+        await secureStorage.setAuthToken(token);
       }
-      return data;
+      return { ...data, access_token: token, token };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -56,15 +59,19 @@ export const checkFirstLaunch = createAsyncThunk(
 
 export const loadToken = createAsyncThunk('auth/loadToken', async () => {
   try {
-    return await secureStorage.getAuthToken();
+    const token = await secureStorage.getAuthToken();
+    const rawUser = await AsyncStorage.getItem(CURRENT_USER_KEY);
+    const user = rawUser ? JSON.parse(rawUser) : null;
+    return { token, user };
   } catch {
-    return null;
+    return { token: null, user: null };
   }
 });
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
   try {
     await secureStorage.removeAuthToken();
+    await AsyncStorage.removeItem(CURRENT_USER_KEY);
   } catch {
   }
   return null;
@@ -100,7 +107,6 @@ const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      // Login
       .addCase(loginUser.pending, state => {
         state.loading = true;
         state.error = null;
@@ -108,7 +114,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload?.access_token;
+        state.token = action.payload?.token || action.payload?.access_token;
+        state.user = action.payload?.user || null;
         state.success = true;
         state.error = null;
       })
@@ -118,7 +125,6 @@ const authSlice = createSlice({
         state.success = false;
       })
 
-      // Register
       .addCase(registerUser.pending, state => {
         state.loading = true;
         state.success = false;
@@ -135,7 +141,6 @@ const authSlice = createSlice({
         state.success = false;
       })
 
-      // User Profile
       .addCase(getUserProfile.pending, state => {
         state.loading = true;
         state.error = null;
@@ -149,7 +154,6 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-      // First Launch
       .addCase(checkFirstLaunch.fulfilled, (state, action) => {
         state.isFirstLaunch = action.payload;
       })
@@ -157,20 +161,20 @@ const authSlice = createSlice({
         state.isFirstLaunch = false;
       })
 
-      // Load Token
       .addCase(loadToken.pending, state => {
         state.authChecked = false;
       })
       .addCase(loadToken.fulfilled, (state, action) => {
-        state.token = action.payload;
+        state.token = action.payload?.token || null;
+        state.user = action.payload?.user || null;
         state.authChecked = true;
       })
       .addCase(loadToken.rejected, state => {
         state.token = null;
+        state.user = null;
         state.authChecked = true;
       })
 
-      // Logout
       .addCase(logoutUser.fulfilled, state => {
         state.user = null;
         state.token = null;
@@ -178,7 +182,6 @@ const authSlice = createSlice({
         state.success = false;
       })
 
-      // Finish Onboarding
       .addCase(finishOnboarding.fulfilled, state => {
         state.isFirstLaunch = false;
       });

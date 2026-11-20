@@ -1,9 +1,10 @@
-import { FlatList, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import ProductRender from '../../components/ProductRender';
 import Loading from '../../components/Loading';
 import useProducts from '../../hooks/useProducts';
 import useCart from '../../hooks/useCart';
+import { AppList } from '../../lib';
 import styles from './CategoryProducts.styles';
 
 const CategoryProducts = ({ route }) => {
@@ -31,14 +32,13 @@ const CategoryProducts = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <AppList
         data={categoryProduct}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         keyExtractor={item => item.id.toString()}
+        estimatedItemSize={240}
         renderItem={({ item }) => <ProductRender item={item} />}
-        initialNumToRender={6}
-        maxToRenderPerBatch={8}
       />
       {cartSuccess && (
         <View style={styles.popUpCard}>

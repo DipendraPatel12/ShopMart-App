@@ -46,8 +46,7 @@ const Login = ({ navigation }) => {
         email: formData.email.trim(),
         password: formData.password,
       });
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 
@@ -55,7 +54,6 @@ const Login = ({ navigation }) => {
     ...styles.textInputStyle,
     borderColor: hasError ? colors.error : colors.border,
   });
-  ``;
 
   const renderError = message => {
     if (!message) return null;
@@ -72,7 +70,6 @@ const Login = ({ navigation }) => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.formContainer}>
-          {/* EMAIL */}
           <View style={styles.fieldContainer}>
             <Text style={styles.label}>Email</Text>
 
@@ -107,7 +104,6 @@ const Login = ({ navigation }) => {
             {renderError(errors.email?.message)}
           </View>
 
-          {/* PASSWORD */}
           <View style={styles.fieldContainer}>
             <Text style={styles.label}>Password</Text>
 

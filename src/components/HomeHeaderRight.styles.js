@@ -42,10 +42,6 @@ export const styles = StyleSheet.create({
   actionIconBtn: {
     padding: scale(6),
   },
-  bellBtn: {
-    padding: scale(6),
-    marginRight: spacing.xs,
-  },
 });
 
 export default styles;

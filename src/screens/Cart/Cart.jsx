@@ -1,12 +1,11 @@
 import {
-  FlatList,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React from 'react';
 import useCart from '../../hooks/useCart';
-import { AppImage, AppIcon } from '../../lib';
+import { AppImage, AppIcon, AppList } from '../../lib';
 import { colors, moderateScale } from '../../constants';
 import styles from './Cart.styles';
 
@@ -29,9 +28,10 @@ const Cart = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.listContainer}>
-        <FlatList
+        <AppList
           data={cart}
           keyExtractor={item => String(item.id)}
+          estimatedItemSize={120}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <View style={styles.cardWrapper}>

@@ -1,12 +1,13 @@
 export const BASE_URLS = {
-  AUTH: 'https://api.escuelajs.co/api/v1',
+  AUTH: 'https://fakestoreapi.com',
   PRODUCTS: 'https://fakestoreapi.com',
 };
 
 export const ENDPOINTS = {
   AUTH: {
     LOGIN: '/auth/login',
-    REGISTER: '/users/',
+    REGISTER: '/users',
+    USERS: '/users',
     PROFILE: '/auth/profile',
   },
   PRODUCTS: {

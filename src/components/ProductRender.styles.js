@@ -11,6 +11,7 @@ import {
 export const styles = StyleSheet.create({
   productContainer: {
     marginBottom: spacing.vMd,
+    alignItems: 'center',
   },
   productCard: {
     width: scale(165),

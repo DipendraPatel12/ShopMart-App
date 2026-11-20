@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, TouchableOpacity, View, Alert } from 'react-native';
 import useAuth from '../../hooks/useAuth';
 import { AppImage } from '../../lib';
 import styles from './Profile.styles';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, fetchProfile } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      fetchProfile();
+    }
+  }, [user, fetchProfile]);
 
   const handleLogout = async () => {
     try {
       await logout();
-    } catch (error) {
+    } catch {
       Alert.alert('Logout failed', 'Could not log out. Please try again.');
     }
   };

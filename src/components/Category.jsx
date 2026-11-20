@@ -1,7 +1,8 @@
-import { Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import useProducts from '../hooks/useProducts';
+import { AppList } from '../lib';
 import styles from './Category.styles';
 
 const Category = () => {
@@ -13,10 +14,11 @@ const Category = () => {
     <View style={styles.container}>
       <Text style={styles.categoryTitle}>Category</Text>
 
-      <FlatList
+      <AppList
         data={allCategories}
         keyExtractor={item => item}
         horizontal
+        estimatedItemSize={80}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.itemWrapper}>

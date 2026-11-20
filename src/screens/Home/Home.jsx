@@ -1,4 +1,4 @@
-import { FlatList, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import React, { useEffect } from 'react';
 import Slider from '../../components/Slider';
 import Category from '../../components/Category';
@@ -7,6 +7,7 @@ import Loading from '../../components/Loading';
 import useProducts from '../../hooks/useProducts';
 import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
+import { AppList } from '../../lib';
 import styles from './Home.styles';
 
 const Home = () => {
@@ -23,11 +24,12 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <AppList
         data={products}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         keyExtractor={item => item.id.toString()}
+        estimatedItemSize={240}
         ListHeaderComponent={
           <>
             <Slider />
