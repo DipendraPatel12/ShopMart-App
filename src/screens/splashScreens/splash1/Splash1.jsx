@@ -2,6 +2,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import useSkipOnboarding from '../../../hooks/useSkipOnboarding';
 import { AppImage } from '../../../lib';
+import { ROUTES } from '../../../constants';
 import styles from '../Splash.styles';
 
 const Splash1 = ({ navigation }) => {
@@ -35,7 +36,7 @@ const Splash1 = ({ navigation }) => {
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.nextBtn}
-          onPress={() => navigation.navigate('Splash2')}
+          onPress={() => navigation.navigate(ROUTES.SPLASH2)}
         >
           <Text style={styles.nextBtnText}>Next</Text>
         </TouchableOpacity>

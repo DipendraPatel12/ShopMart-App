@@ -2,6 +2,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import useAuth from '../../../hooks/useAuth';
 import { AppImage } from '../../../lib';
+import { ROUTES } from '../../../constants';
 import styles from '../Splash.styles';
 
 const Splash3 = ({ navigation }) => {
@@ -10,7 +11,7 @@ const Splash3 = ({ navigation }) => {
   const handleGetStarted = async () => {
     try {
       await completeOnboarding();
-      navigation.navigate('Login');
+      navigation.navigate(ROUTES.LOGIN);
     } catch {
     }
   };
@@ -18,7 +19,7 @@ const Splash3 = ({ navigation }) => {
   const handleNext = async () => {
     try {
       await completeOnboarding();
-      navigation.navigate('Signup');
+      navigation.navigate(ROUTES.SIGNUP);
     } catch {
     }
   };

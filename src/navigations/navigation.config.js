@@ -1,5 +1,5 @@
 import React from 'react';
-import Back from '../components/Back';
+import BackButton from '../components/backButton/BackButton';
 import {
   colors,
   verticalScale,
@@ -9,7 +9,7 @@ import {
 export const defaultStackScreenOptions = {
   headerTitleAlign: 'center',
   headerShadowVisible: false,
-  headerLeft: () => <Back />,
+  headerLeft: () => <BackButton />,
   headerStyle: {
     backgroundColor: colors.background,
   },

@@ -1,15 +1,16 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Home from '../screens/Home/Home';
-import Cart from '../screens/Cart/Cart';
-import Profile from '../screens/Profile/Profile';
-import Favorite from '../screens/Favorite/Favorite';
+import Home from '../screens/home/Home';
+import Cart from '../screens/cart/Cart';
+import Profile from '../screens/profile/Profile';
+import Favorite from '../screens/favorite/Favorite';
 
-import ProfileView from '../components/ProfileView';
-import HomeHeaderRight from '../components/HomeHeaderRight';
-import CartHeaderRight from '../components/CartHeaderRight';
-import TabBarIcon from '../components/TabBarIcon';
+import ProfileView from '../components/profileView/ProfileView';
+import HomeHeaderRight from '../components/homeHeaderRight/HomeHeaderRight';
+import CartHeaderRight from '../components/cartHeaderRight/CartHeaderRight';
+import TabBarIcon from '../components/tabBarIcon/TabBarIcon';
+import { ROUTES } from '../constants';
 import { defaultTabScreenOptions } from './navigation.config';
 
 const Tab = createBottomTabNavigator();
@@ -35,7 +36,7 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator screenOptions={defaultTabScreenOptions}>
       <Tab.Screen
-        name="Home"
+        name={ROUTES.HOME}
         component={Home}
         options={{
           headerTitle: '',
@@ -46,7 +47,7 @@ const TabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Cart"
+        name={ROUTES.CART}
         component={Cart}
         options={{
           headerRight: renderCartHeaderRight,
@@ -55,7 +56,7 @@ const TabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Favorite"
+        name={ROUTES.FAVORITE}
         component={Favorite}
         options={{
           tabBarIcon: renderFavoriteIcon,
@@ -63,7 +64,7 @@ const TabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Profile"
+        name={ROUTES.PROFILE}
         component={Profile}
         options={{
           tabBarIcon: renderProfileIcon,

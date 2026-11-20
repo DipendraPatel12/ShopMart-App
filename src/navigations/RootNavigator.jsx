@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import useAuth from '../hooks/useAuth';
 import StackNavigator from './StackNavigator';
-import Loading from '../components/Loading';
+import Loading from '../components/loading/Loading';
 
 const RootNavigator = () => {
   const { authChecked, isFirstLaunch, initializeAuth } = useAuth();

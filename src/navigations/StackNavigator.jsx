@@ -4,15 +4,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Splash1 from '../screens/splashScreens/splash1/Splash1';
 import Splash2 from '../screens/splashScreens/splash2/Splash2';
 import Splash3 from '../screens/splashScreens/splash3/Splash3';
-import Signup from '../screens/Signup/Signup';
-import Login from '../screens/Login/Login';
+import Signup from '../screens/signup/Signup';
+import Login from '../screens/login/Login';
 
 import TabNavigator from './TabNavigator';
-import ProductDetail from '../screens/ProductDetail/ProductDetail';
-import CategoryProduct from '../screens/CategoryProducts/CategoryProducts';
-import Success from '../screens/Success/Success';
+import ProductDetail from '../screens/productDetail/ProductDetail';
+import CategoryProduct from '../screens/categoryProducts/CategoryProducts';
+import Success from '../screens/success/Success';
 
 import useAuth from '../hooks/useAuth';
+import { ROUTES } from '../constants';
 import { defaultStackScreenOptions } from './navigation.config';
 
 const Stack = createNativeStackNavigator();
@@ -27,19 +28,19 @@ const StackNavigator = ({ isFirstLaunch }) => {
       {token ? (
         <>
           <Stack.Screen
-            name="MainTabs"
+            name={ROUTES.MAIN_TABS}
             component={TabNavigator}
             options={{ headerShown: false }}
           />
 
           <Stack.Screen
-            name="ProductDetail"
+            name={ROUTES.PRODUCT_DETAIL}
             component={ProductDetail}
             options={{ headerTitle: 'Product Details' }}
           />
 
           <Stack.Screen
-            name="CategoryProduct"
+            name={ROUTES.CATEGORY_PRODUCT}
             component={CategoryProduct}
             options={({ route }) => ({
               headerTitle: route.params?.categoryName || 'Products',
@@ -47,7 +48,7 @@ const StackNavigator = ({ isFirstLaunch }) => {
           />
 
           <Stack.Screen
-            name="Success"
+            name={ROUTES.SUCCESS}
             component={Success}
             options={{ headerShown: false }}
           />
@@ -57,17 +58,17 @@ const StackNavigator = ({ isFirstLaunch }) => {
           {isFirstLaunch && (
             <>
               <Stack.Screen
-                name="Splash1"
+                name={ROUTES.SPLASH1}
                 component={Splash1}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
-                name="Splash2"
+                name={ROUTES.SPLASH2}
                 component={Splash2}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
-                name="Splash3"
+                name={ROUTES.SPLASH3}
                 component={Splash3}
                 options={{ headerShown: false }}
               />
@@ -75,12 +76,12 @@ const StackNavigator = ({ isFirstLaunch }) => {
           )}
 
           <Stack.Screen
-            name="Login"
+            name={ROUTES.LOGIN}
             component={Login}
             options={{ headerTitle: 'Login' }}
           />
           <Stack.Screen
-            name="Signup"
+            name={ROUTES.SIGNUP}
             component={Signup}
             options={{
               headerTitle: 'Sign Up',
