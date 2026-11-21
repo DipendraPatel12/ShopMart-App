@@ -1,28 +1,31 @@
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import useProducts from '../../hooks/useProducts';
-import { AppList } from '../../lib';
+import CategorySkeleton from '../categorySkeleton/CategorySkeleton';
 import { ROUTES } from '../../constants';
 import styles from './Category.styles';
 
 const Category = () => {
   const navigation = useNavigation();
-  const { categories } = useProducts();
+  const { categories, loading } = useProducts();
+
+  if (loading && categories.length === 0) {
+    return <CategorySkeleton />;
+  }
+
   const allCategories = ['All', ...categories];
 
   return (
     <View style={styles.container}>
       <Text style={styles.categoryTitle}>Category</Text>
 
-      <AppList
-        data={allCategories}
-        keyExtractor={item => item}
+      <ScrollView
         horizontal
-        estimatedItemSize={80}
         showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.itemWrapper}>
+      >
+        {allCategories.map(item => (
+          <View key={item} style={styles.itemWrapper}>
             <TouchableOpacity
               style={
                 item === 'All' ? styles.highlightAllTextBg : styles.categoryCard
@@ -46,8 +49,8 @@ const Category = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        )}
-      />
+        ))}
+      </ScrollView>
     </View>
   );
 };

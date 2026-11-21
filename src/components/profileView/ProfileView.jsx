@@ -1,17 +1,38 @@
 import { Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
-import { AppImage } from '../../lib';
+import { AppImage, AppIcon } from '../../lib';
+import { colors, moderateScale } from '../../constants';
 import styles from './ProfileView.styles';
 
 const ProfileView = () => {
   const { user, loading } = useAuth();
+  const navigation = useNavigation();
+
+  const handleToggleDrawer = () => {
+    const parentDrawer = navigation.getParent();
+    if (parentDrawer?.toggleDrawer) {
+      parentDrawer.toggleDrawer();
+    } else {
+      navigation.dispatch(DrawerActions.toggleDrawer());
+    }
+  };
 
   return (
     <TouchableOpacity
       style={styles.container}
       activeOpacity={0.7}
+      onPress={handleToggleDrawer}
     >
+      <View style={styles.menuIconContainer}>
+        <AppIcon
+          name="bars"
+          size={moderateScale(18)}
+          color={colors.textDark}
+        />
+      </View>
+
       <View>
         <AppImage
           source={

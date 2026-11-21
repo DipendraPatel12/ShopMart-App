@@ -4,6 +4,7 @@ export const ROUTES = Object.freeze({
   SPLASH3: 'Splash3',
   LOGIN: 'Login',
   SIGNUP: 'Signup',
+  MAIN_DRAWER: 'MainDrawer',
   MAIN_TABS: 'MainTabs',
   PRODUCT_DETAIL: 'ProductDetail',
   CATEGORY_PRODUCT: 'CategoryProduct',

@@ -34,7 +34,7 @@ const Login = ({ navigation }) => {
     if (token) {
       navigation.reset({
         index: 0,
-        routes: [{ name: ROUTES.MAIN_TABS }],
+        routes: [{ name: ROUTES.MAIN_DRAWER }],
       });
     }
   }, [token, navigation]);

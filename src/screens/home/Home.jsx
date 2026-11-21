@@ -1,17 +1,20 @@
-import { View, Text } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import React, { useEffect } from 'react';
 import Slider from '../../components/slider/Slider';
+import SliderSkeleton from '../../components/sliderSkeleton/SliderSkeleton';
 import Category from '../../components/category/Category';
+import CategorySkeleton from '../../components/categorySkeleton/CategorySkeleton';
 import ProductRender from '../../components/productRender/ProductRender';
-import Loading from '../../components/loading/Loading';
+import ProductSkeleton from '../../components/productSkeleton/ProductSkeleton';
 import useProducts from '../../hooks/useProducts';
 import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
-import { AppList } from '../../lib';
 import styles from './Home.styles';
 
+const SKELETON_ITEMS = [1, 2, 3, 4, 5, 6];
+
 const Home = () => {
-  const { products, loading, fetchProducts } = useProducts();
+  const { products, loading, error, fetchProducts } = useProducts();
   const { fetchProfile } = useAuth();
   const { cartSuccess } = useCart();
 
@@ -20,23 +23,34 @@ const Home = () => {
     fetchProducts();
   }, [fetchProfile, fetchProducts]);
 
-  if (loading && products.length === 0) return <Loading />;
+  const isInitialLoading = loading || (products.length === 0 && !error);
 
   return (
     <View style={styles.container}>
-      <AppList
-        data={products}
+      <FlatList
+        data={isInitialLoading ? SKELETON_ITEMS : products}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
-        keyExtractor={item => item.id.toString()}
-        estimatedItemSize={240}
-        ListHeaderComponent={
-          <>
-            <Slider />
-            <Category />
-          </>
+        keyExtractor={item =>
+          isInitialLoading ? `skeleton-${item}` : item.id.toString()
         }
-        renderItem={({ item }) => <ProductRender item={item} />}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          isInitialLoading ? (
+            <>
+              <SliderSkeleton />
+              <CategorySkeleton />
+            </>
+          ) : (
+            <>
+              <Slider />
+              <Category />
+            </>
+          )
+        }
+        renderItem={({ item }) =>
+          isInitialLoading ? <ProductSkeleton /> : <ProductRender item={item} />
+        }
       />
 
       {cartSuccess && (

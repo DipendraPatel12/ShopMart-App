@@ -14,11 +14,16 @@ export const styles = StyleSheet.create({
     padding: spacing.sm,
     alignItems: 'center',
   },
+  menuIconContainer: {
+    paddingRight: spacing.xs,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   avatar: {
-    width: scale(42),
-    height: scale(42),
+    width: scale(40),
+    height: scale(40),
     backgroundColor: colors.chipBg,
-    borderRadius: moderateScale(21),
+    borderRadius: moderateScale(20),
   },
   textContainer: {
     justifyContent: 'center',

@@ -7,7 +7,7 @@ import Splash3 from '../screens/splashScreens/splash3/Splash3';
 import Signup from '../screens/signup/Signup';
 import Login from '../screens/login/Login';
 
-import TabNavigator from './TabNavigator';
+import DrawerNavigator from './DrawerNavigator';
 import ProductDetail from '../screens/productDetail/ProductDetail';
 import CategoryProduct from '../screens/categoryProducts/CategoryProducts';
 import Success from '../screens/success/Success';
@@ -28,8 +28,8 @@ const StackNavigator = ({ isFirstLaunch }) => {
       {token ? (
         <>
           <Stack.Screen
-            name={ROUTES.MAIN_TABS}
-            component={TabNavigator}
+            name={ROUTES.MAIN_DRAWER}
+            component={DrawerNavigator}
             options={{ headerShown: false }}
           />
 

@@ -26,7 +26,7 @@ const Success = ({ navigation }) => {
         style={styles.continueBtn}
         activeOpacity={0.6}
         onPress={() => {
-          navigation.navigate(ROUTES.MAIN_TABS);
+          navigation.navigate(ROUTES.MAIN_DRAWER);
         }}
       >
         <Text style={styles.continueText}>Continue Shopping</Text>
